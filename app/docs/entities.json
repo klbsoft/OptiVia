@@ -1,0 +1,163 @@
+{
+  "users": {
+    "id": "usr_1a2b3c4d",
+    "name": "Juan",
+    "last_name": "Pérez",
+    "date_of_birth": "1990-05-15",
+    "email": "juan.perez@email.com",
+    "phone": "+18095551234",
+ 
+    "password_hash": "$2b$10$xK8fJ9qL3mN4pR5sT6uV7w",
+    "user_type": "gov|student|police", 
+    "discount_percentage": 0, 
+    "is_active": true,
+    "created_at": "2024-01-15T08:30:00Z",
+    "updated_at": "2024-01-15T08:30:00Z"
+  },
+    "wallets": {
+    "id": "wal_1a2b3c4d",
+    "user_id": "usr_1a2b3c4d",
+    "payment_methods": [],
+    "created_at": "2024-01-15T08:30:00Z",
+    "updated_at": "2024-01-20T10:00:00Z"
+  },
+
+  "payment_methods": {
+    "id": "pm_1a2b3c4d",
+    "wallet_id": "wal_1a2b3c4d",
+    "user_id": "usr_1a2b3c4d",
+    "method_type": "card", 
+    "is_default": false,
+    "is_active": true,
+    "created_at": "2024-01-15T08:35:00Z",
+    "updated_at": "2024-01-15T08:35:00Z"
+  },
+  
+  "cards": {
+    "id": "crd_5e6f7g8h",
+    "user_id": "usr_1a2b3c4d",
+    "name_on_card": "Juan Pérez",
+    "card_number": "4532123456789012",  
+    "expiry_date": "12/26",
+    "cvv": "123",  
+    "card_type": "visa",
+    "is_default": true,
+    "created_at": "2024-01-15T08:35:00Z",
+    "updated_at": "2024-01-15T08:35:00Z"
+  },
+  
+  "transactions": {
+    "id": "txn_9i0j1k2l",
+    "user_id": "usr_1a2b3c4d",
+    "payment_method": "card",  
+    "amount": 35.00,
+    "discount_applied": 0,
+    "final_amount": 35.00,
+    "type": "trip_payment", 
+    "status": "completed",  
+    "bus_id": "bus_3m4n5o6p",
+    "route_id": "rte_7q8r9s0t",
+    "trip_id": "trp_3g4h5i6j",  
+    "fare_snapshot_id": "fs_1a2b3c4d", 
+    "created_at": "2024-01-20T14:22:00Z",
+    "updated_at": "2024-01-20T14:22:00Z"
+  },
+
+  "drivers": {
+    "id": "drv_1u2v3w4x",
+    "name": "Carlos",
+    "email": "carlos.rodriguez@email.com",
+    "phone": "+18095559876",
+    "license_number": "LIC-2024-98765",
+    "license_expiry": "2026-12-31",
+    "status": "active", 
+    "rating": 4.5,
+    "hire_date": "2023-11-01",
+    "created_at": "2023-11-01T10:00:00Z",
+    "updated_at": "2024-01-20T10:00:00Z"
+  },
+
+  "buses": {
+    "id": "bus_3m4n5o6p",
+    "plate_number": "A001234",
+    "model": "Mercedes-Benz O500",
+    "capacity": 45,
+    "year": 2022,
+    "maintenance_status": "operational",  
+    "current_latitude": 18.4861,
+    "current_longitude": -69.9312,
+    "speed": 35.5,
+    "status": "in_service",  
+    "last_updated": "2024-01-20T14:25:00Z",
+    "created_at": "2023-10-01T10:00:00Z",
+    "updated_at": "2024-01-20T14:25:00Z"
+  },
+
+  "route_stops": {
+    "id": "stp_5y6z7a8b",
+    "route_id": "rte_7q8r9s0t",
+    "stop_name": "Plaza Central",
+    "latitude": 18.4890,
+    "longitude": -69.9280,
+    "stop_order": 3,
+    "is_active": true,
+    "created_at": "2024-01-10T10:00:00Z",
+    "updated_at": "2024-01-10T10:00:00Z"
+  },
+
+  "driver_assignments": {
+    "id": "asg_9c0d1e2f",
+    "driver_id": "drv_1u2v3w4x",
+    "bus_id": "bus_3m4n5o6p",
+    "route_id": "rte_7q8r9s0t",
+    "assigned_date": "2024-01-20",
+    "shift_start": "06:00:00",
+    "shift_end": "14:00:00",
+    "status": "active",  
+    "created_at": "2024-01-19T08:00:00Z",
+    "updated_at": "2024-01-20T06:00:00Z"
+  },
+
+  "trips": {
+    "id": "trp_3g4h5i6j",
+    "bus_id": "bus_3m4n5o6p",
+    "route_id": "rte_7q8r9s0t",
+    "driver_id": "drv_1u2v3w4x",
+    "fare_snapshot_id": "fs_1a2b3c4d",  
+    "start_time": "2024-01-20T06:10:00Z",
+    "end_time": null,
+    "status": "in_progress",  
+    "current_stop_order": 5,
+    "passenger_count": 32,
+    "total_revenue": 1120.00,
+    "created_at": "2024-01-19T15:00:00Z",
+    "updated_at": "2024-01-20T14:22:00Z"
+  },
+
+  "passenger_trips": {
+    "id": "ptp_7k8l9m0n",
+    "user_id": "usr_1a2b3c4d",
+    "trip_id": "trp_3g4h5i6j",
+    "transaction_id": "txn_9i0j1k2l",
+    "boarded_at": "2024-01-20T14:22:00Z",
+    "exited_at": null,
+    "status": "in_transit",  
+    "fare_amount": 35.00,
+    "discount_applied": 0,
+    "final_amount": 35.00,
+    "created_at": "2024-01-20T14:22:00Z",
+    "updated_at": "2024-01-20T14:22:00Z"
+  },
+  "fare_history": {
+    "id": "fh_1a2b3c4d",
+    "route_id": "rte_7q8r9s0t",
+    "base_fare": 35.00,
+    "effective_date": "2024-01-15T00:00:00Z",  
+    "end_date": null,  
+    "reason": "Ajuste anual por inflación",
+    "modified_by": "admin_user_id",
+    "created_at": "2024-01-10T14:00:00Z",
+    "updated_at": "2024-01-10T14:00:00Z"
+  }
+ 
+}

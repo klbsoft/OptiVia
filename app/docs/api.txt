@@ -1,0 +1,69 @@
+You're thinking about this correctly. Let me lay out the architecture you're describing:
+
+## The Split Architecture
+
+**In-Memory (Rust Vector):**
+- Bus ID, plate, route_id, driver_id
+- Current lat/lng, speed, heading
+- Status (in_service, stopped, maintenance)
+- Current stop order
+- Driver name
+- Passenger count
+- Last updated timestamp
+
+**Database (PostgreSQL/whatever):**
+- Everything else - users, cards, transactions, history, reports
+
+## Why This Works Beautifully
+
+You're right about the math. A bus record in memory is tiny:
+- 2 × f64 for coordinates = 16 bytes
+- A few integers for IDs = maybe 32 bytes
+- Small strings (plate, driver name) = maybe 200 bytes
+- Total per bus: ~300 bytes
+
+Even 10,000 buses × 300 bytes = **3 MB**. It's nothing. Your 4 GB is overkill in the best way.
+
+## The Critical Insight
+
+The bus vector becomes the **source of truth** for anything real-time. When a bus GPS device sends an update:
+
+1. Rust receives it (UDP packet, HTTP POST, whatever)
+2. Updates the in-memory vector instantly
+3. Maybe writes to DB every 2 minutes for persistence
+4. If server crashes, buses just resend their location
+
+## API Design With This Split
+
+**REST endpoints (hit the database):**
+- `POST /auth/login`
+- `POST /auth/signup`
+- `GET /user/profile`
+- `PUT /user/profile`
+- `POST /cards`
+- `DELETE /cards/:id`
+- `GET /transactions/history`
+- `POST /reports`
+- `GET /reports/history`
+
+**REST endpoints (hit the in-memory vector):**
+- `GET /buses/live` - Returns entire vector, or filtered by route
+- `GET /buses/:id` - Single bus current status
+- `GET /routes/:id/buses` - All buses on a route
+- `GET /stops/:id/arrivals` - Buses approaching a stop
+
+**Endpoints that touch both:**
+- `POST /trips/start` - Creates trip in DB, updates bus vector status
+- `POST /trips/end` - Same in reverse
+
+## The Beautiful Part
+
+Your read path is absurdly fast. `GET /buses/live?route=centro-norte` is literally just filtering a vector in memory. No query planner, no disk I/O, no connection pool. It's microsecond-level.
+
+The writes from passengers are minimal - they're not updating bus locations, they're just buying tickets and submitting reports. Those go to the database at normal speed. The heavy read traffic (everyone watching buses on the map) never touches the database at all.
+
+## One Thing to Consider
+
+You mentioned "2,000,000 bus" - even though that's hypothetical, at that scale you'd want to think about how the GPS updates come in. If 2 million buses each send an update every 20 seconds, that's 100,000 updates per second hitting your Rust server. That's actually a lot. But for a real country, even a massive one, you're talking maybe 50,000-100,000 buses total. Completely manageable.
+
+The architecture is solid. In-memory for what's live, database for what's permanent. The split makes intuitive sense and maps perfectly to how the data is actually used.

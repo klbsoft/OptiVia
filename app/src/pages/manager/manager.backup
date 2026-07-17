@@ -1,0 +1,583 @@
+import React, { useState } from "react";
+
+const commonStyles = {
+  text_font_size: "16px",
+  text_font_weight: "400",
+  button_fontSize: "18px",
+  button_fontWeight: "500",
+  green: "#6CC24A",
+  blue: "#0367C7",
+  white: "#ffffff",
+};
+
+type SubMenuItem = {
+  label: string;
+  onClick?: () => void;
+};
+
+type MenuItem = {
+  icon: string;
+  label: string;
+  subItems: SubMenuItem[];
+};
+
+export default function Management() {
+  const [activeMenu, setActiveMenu] = useState<number | null>(null);
+  const [activeSubMenu, setActiveSubMenu] = useState<string | null>(null);
+
+  const menuItems: MenuItem[] = [
+    {
+      icon: "📊",
+      label: "Dashboard Principal",
+      subItems: [
+        { label: "Resumen de operaciones diarias" },
+        { label: "Métricas en tiempo real" },
+        { label: "Alertas y notificaciones" },
+      ],
+    },
+    {
+      icon: "🚌",
+      label: "Gestión de Transporte",
+      subItems: [
+        { label: "Buses (CRUD + mantenimiento)" },
+        { label: "Conductores (CRUD + rendimiento)" },
+        { label: "Rutas (CRUD + paradas + horarios)" },
+        { label: "Asignaciones (conductor-bus-ruta)" },
+        { label: "Viajes (seguimiento en tiempo real)" },
+      ],
+    },
+    {
+      icon: "💰",
+      label: "Gestión de Pagos y Tarifas",
+      subItems: [
+        { label: "Tarifas base (historial de cambios)" },
+        { label: "Sobrescrituras temporales (feriados/eventos)" },
+        { label: "Descuentos (configuraciones + asignaciones)" },
+        { label: "Transacciones (historial completo)" },
+        { label: "Reportes de efectivo (conductores)" },
+      ],
+    },
+    {
+      icon: "👥",
+      label: "Gestión de Usuarios",
+      subItems: [
+        { label: "Usuarios (CRUD + verificación)" },
+        { label: "Wallet (balances + recargas)" },
+        { label: "Métodos de pago (gestión)" },
+        { label: "Descuentos aplicados" },
+      ],
+    },
+    {
+      icon: "📅",
+      label: "Gestión de Horarios",
+      subItems: [
+        { label: "Horarios regulares (por día)" },
+        { label: "Horarios especiales (feriados)" },
+        { label: "Frecuencias (hora pico/normal)" },
+        { label: "Desvíos temporales" },
+      ],
+    },
+    {
+      icon: "🔧",
+      label: "Gestión Operativa",
+      subItems: [
+        { label: "Mantenimiento (buses)" },
+        { label: "Incidentes (reportes + seguimiento)" },
+        { label: "Quejas/Sugerencias (usuarios)" },
+      ],
+    },
+    {
+      icon: "📈",
+      label: "Reportes y Análisis",
+      subItems: [
+        { label: "Reportes diarios (por ruta)" },
+        { label: "Desempeño de conductores" },
+        { label: "Análisis de pasajeros" },
+        { label: "Ingresos por método de pago" },
+        { label: "Métricas de eficiencia" },
+      ],
+    },
+    {
+      icon: "📱",
+      label: "Gestión de Comunicación",
+      subItems: [
+        { label: "Notificaciones masivas" },
+        { label: "Notificaciones específicas" },
+        { label: "Alertas de emergencia" },
+        { label: "Anuncios en la app" },
+      ],
+    },
+    {
+      icon: "🔐",
+      label: "Seguridad y Administración",
+      subItems: [
+        { label: "Administradores (roles y permisos)" },
+        { label: "Auditoría (logs de acciones)" },
+        { label: "Configuración del sistema" },
+        { label: "Respaldos" },
+      ],
+    },
+  ];
+
+  const handleMainButtonClick = (index: number) => {
+    if (activeMenu === index) {
+      setActiveMenu(null);
+      setActiveSubMenu(null);
+    } else {
+      setActiveMenu(index);
+      setActiveSubMenu(null);
+    }
+  };
+
+  const handleSubItemClick = (mainLabel: string, subLabel: string) => {
+    setActiveSubMenu(`${mainLabel} - ${subLabel}`);
+    console.log(`Navigating to: ${mainLabel} > ${subLabel}`);
+  };
+
+  const user = {
+    name: "Juan Pérez",
+    email: "juan.perez@email.com",
+  };
+
+  const bus = {
+    plate: "A001234",
+    model: "Mercedes-Benz O500",
+    status: "In service",
+    speed: "35.5 km/h",
+  };
+
+  const route = {
+    name: "Centro - Norte",
+    start: "Parque Independencia",
+    end: "Estación Norte",
+  };
+
+  const trip = {
+    status: "In progress",
+    currentStop: "5",
+  };
+
+  const report = {
+    type: "Fear",
+    status: "Pending",
+    description:
+      "Pasajero actuando de manera sospechosa en la parte trasera del autobús",
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#f4f6f8",
+        fontFamily: "Arial, sans-serif",
+        color: "#222",
+        position: "relative",
+        isolation: "isolate",
+      }}
+    >
+      {/* TOP BAR */}
+      <header
+        style={{
+          minHeight: "70px",
+          background: commonStyles.blue,
+          color: commonStyles.white,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "0 30px",
+          flexWrap: "wrap",
+          position: "relative",
+          zIndex: 1002,
+        }}
+      >
+        <h2 style={{ margin: "10px 0" }}>Bus Management System</h2>
+        <div style={{ fontSize: commonStyles.text_font_size }}>
+          Admin Panel | República Dominicana
+        </div>
+      </header>
+
+      {/* TOOLBAR WRAPPER */}
+      <div style={{ position: "relative", zIndex: 1001 }}>
+        <nav
+          style={{
+            background: commonStyles.white,
+            borderBottom: "2px solid #e0e0e0",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            position: "sticky",
+            top: 0,
+            zIndex: 1000,
+            overflow: "visible",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              padding: "0 20px",
+              maxWidth: "100%",
+              overflowX: "auto",
+              overflowY: "visible",
+            }}
+          >
+            {menuItems.map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  position: "relative",
+                  overflow: "visible",
+                }}
+              >
+                <button
+                  onClick={() => handleMainButtonClick(index)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "12px 16px",
+                    border: "none",
+                    background:
+                      activeMenu === index
+                        ? commonStyles.green
+                        : "transparent",
+                    color: activeMenu === index ? commonStyles.white : "#333",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: commonStyles.button_fontWeight,
+                    whiteSpace: "nowrap",
+                    transition: "all 0.3s ease",
+                    borderBottom:
+                      activeMenu === index
+                        ? "none"
+                        : "3px solid transparent",
+                    borderRadius: "4px 4px 0 0",
+                    margin: "4px 2px 0 2px",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (activeMenu !== index) {
+                      e.currentTarget.style.background = "#f0f0f0";
+                      e.currentTarget.style.color = commonStyles.blue;
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (activeMenu !== index) {
+                      e.currentTarget.style.background = "transparent";
+                      e.currentTarget.style.color = "#333";
+                    }
+                  }}
+                >
+                  <span style={{ fontSize: "16px" }}>{item.icon}</span>
+                  <span>{item.label}</span>
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      transform:
+                        activeMenu === index
+                          ? "rotate(180deg)"
+                          : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
+                  >
+                    ▼
+                  </span>
+                </button>
+
+                {/* DROPDOWN MENU */}
+                {activeMenu === index && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      left: index > menuItems.length - 4 ? "auto" : 0,
+                      right: index > menuItems.length - 4 ? 0 : "auto",
+                      background: commonStyles.white,
+                      border: "1px solid #e0e0e0",
+                      borderRadius: "0 0 8px 8px",
+                      boxShadow: "0 8px 24px rgba(0,0,0,0.2)",
+                      minWidth: "300px",
+                      maxHeight: "400px",
+                      overflowY: "auto",
+                      zIndex: 9999,
+                    }}
+                  >
+                    {item.subItems.map((subItem, subIndex) => (
+                      <button
+                        key={subIndex}
+                        onClick={() =>
+                          handleSubItemClick(item.label, subItem.label)
+                        }
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          padding: "12px 20px",
+                          border: "none",
+                          background:
+                            activeSubMenu ===
+                            `${item.label} - ${subItem.label}`
+                              ? "#f0f7ff"
+                              : "transparent",
+                          color:
+                            activeSubMenu ===
+                            `${item.label} - ${subItem.label}`
+                              ? commonStyles.blue
+                              : "#333",
+                          cursor: "pointer",
+                          textAlign: "left",
+                          fontSize: "14px",
+                          borderBottom: "1px solid #f0f0f0",
+                          transition: "background 0.2s ease",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = "#f0f7ff";
+                          e.currentTarget.style.color = commonStyles.blue;
+                        }}
+                        onMouseLeave={(e) => {
+                          if (
+                            activeSubMenu !==
+                            `${item.label} - ${subItem.label}`
+                          ) {
+                            e.currentTarget.style.background = "transparent";
+                            e.currentTarget.style.color = "#333";
+                          }
+                        }}
+                      >
+                        • {subItem.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </nav>
+      </div>
+
+      {/* DASHBOARD CONTENT */}
+      {activeSubMenu && (
+        <div
+          style={{
+            background: commonStyles.green,
+            color: commonStyles.white,
+            padding: "12px 30px",
+            fontSize: "14px",
+            fontWeight: commonStyles.text_font_weight,
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          Sección activa: {activeSubMenu}
+        </div>
+      )}
+
+      <main
+        style={{
+          padding: "30px",
+          position: "relative",
+          zIndex: 1,
+        }}
+      >
+        {/* SUMMARY CARDS */}
+        <section
+          style={{
+            display: "flex",
+            gap: "20px",
+            marginBottom: "25px",
+            flexWrap: "wrap",
+          }}
+        >
+          <Card title="Active Users">
+            <h1 style={{ color: commonStyles.blue }}>1,254</h1>
+            <span style={{ color: "#666" }}>Registered passengers</span>
+          </Card>
+
+          <Card title="Active Buses">
+            <h1 style={{ color: commonStyles.green }}>42</h1>
+            <span style={{ color: commonStyles.green }}>
+              Currently operating
+            </span>
+          </Card>
+
+          <Card title="Trips Today">
+            <h1 style={{ color: commonStyles.blue }}>356</h1>
+            <span style={{ color: "#666" }}>
+              Completed and active routes
+            </span>
+          </Card>
+
+          <Card title="Pending Reports">
+            <h1 style={{ color: "orange" }}>8</h1>
+            <span style={{ color: "orange" }}>Need review</span>
+          </Card>
+        </section>
+
+        {/* MAIN DATA SECTION */}
+        <section
+          style={{
+            display: "flex",
+            gap: "20px",
+            flexWrap: "wrap",
+          }}
+        >
+          <Card title="Current Passenger">
+            <Row label="Name" value={user.name} />
+            <Row label="Email" value={user.email} />
+
+            <button
+              style={{
+                marginTop: "15px",
+                width: "100%",
+                padding: "12px",
+                border: "none",
+                borderRadius: "8px",
+                background: commonStyles.blue,
+                color: commonStyles.white,
+                cursor: "pointer",
+                fontSize: commonStyles.button_fontSize,
+                fontWeight: commonStyles.button_fontWeight,
+              }}
+            >
+              View Profile
+            </button>
+          </Card>
+
+          <Card title="Bus Monitoring">
+            <Row label="Plate" value={bus.plate} />
+            <Row label="Model" value={bus.model} />
+            <Row label="Status" value={bus.status} />
+            <Row label="Speed" value={bus.speed} />
+
+            <div
+              style={{
+                marginTop: "15px",
+                height: "120px",
+                background: "#e7edf5",
+                borderRadius: "8px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#999",
+                border: "2px dashed #ccc",
+              }}
+            >
+              <span>Map Preview</span>
+            </div>
+          </Card>
+
+          <Card title="Current Route">
+            <Row label="Route" value={route.name} />
+            <Row label="Start" value={route.start} />
+            <Row label="End" value={route.end} />
+
+            <div
+              style={{
+                marginTop: "15px",
+                padding: "12px",
+                background: "#edf8ea",
+                borderRadius: "8px",
+                color: "#2e7d32",
+                borderLeft: `4px solid ${commonStyles.green}`,
+              }}
+            >
+              Bus is currently moving
+            </div>
+          </Card>
+        </section>
+
+        {/* LOWER SECTION */}
+        <section
+          style={{
+            display: "flex",
+            gap: "20px",
+            marginTop: "25px",
+            flexWrap: "wrap",
+          }}
+        >
+          <Card title="Trip Status">
+            <Row label="Status" value={trip.status} />
+            <Row label="Current stop" value={trip.currentStop} />
+          </Card>
+
+          <Card title="Latest Safety Report">
+            <Row label="Type" value={report.type} />
+            <Row label="Status" value={report.status} />
+            <p style={{ color: "#666", fontStyle: "italic" }}>
+              {report.description}
+            </p>
+            <button
+              style={{
+                background: commonStyles.green,
+                border: "none",
+                padding: "10px 20px",
+                borderRadius: "8px",
+                color: commonStyles.white,
+                cursor: "pointer",
+                fontSize: commonStyles.button_fontSize,
+                fontWeight: commonStyles.button_fontWeight,
+                marginTop: "10px",
+              }}
+            >
+              Review Report
+            </button>
+          </Card>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+// Reusable Components
+type CardProps = {
+  title: string;
+  children: React.ReactNode;
+};
+
+const Card = ({ title, children }: CardProps) => {
+  return (
+    <div
+      style={{
+        background: commonStyles.white,
+        borderRadius: "12px",
+        padding: "20px",
+        boxShadow: "0 3px 10px rgba(0,0,0,0.08)",
+        flex: 1,
+        minWidth: "280px",
+        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-2px)";
+        e.currentTarget.style.boxShadow = "0 5px 20px rgba(0,0,0,0.1)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "0 3px 10px rgba(0,0,0,0.08)";
+      }}
+    >
+      <h3
+        style={{
+          marginTop: 0,
+          color: commonStyles.blue,
+          fontSize: "18px",
+          borderBottom: `3px solid ${commonStyles.green}`,
+          paddingBottom: "10px",
+        }}
+      >
+        {title}
+      </h3>
+      {children}
+    </div>
+  );
+};
+
+const Row = ({ label, value }: { label: string; value: string }) => (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      marginBottom: "8px",
+      fontSize: commonStyles.text_font_size,
+      fontWeight: commonStyles.text_font_weight,
+    }}
+  >
+    <span style={{ fontWeight: "600", color: "#555" }}>{label}</span>
+    <span style={{ color: "#222" }}>{value}</span>
+  </div>
+);

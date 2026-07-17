@@ -1,0 +1,189 @@
+import { useState } from "react";
+import { commonStyles } from "../../components/theme/default";
+import { useAuth } from "../../context/AuthContext";
+ 
+function Login({ onSwitchToSignup }: { onSwitchToSignup: () => void }) {  const { login } = useAuth();
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+ 
+
+  const handleLogin = () => {
+    if (!phone || !password) {
+      setError("Todos los campos son requeridos");
+      return;
+    }
+
+    // Mock login - replace with API call
+    console.log("Login:", { phone, password });
+    
+    // Simulate successful login
+    login();
+  };
+
+  const inputStyle: React.CSSProperties = {
+    borderRadius: "20px",
+    padding: "12px 16px",
+    border: `2px solid ${commonStyles.green}`,
+    backgroundColor: "#FFFFFF",
+    color: commonStyles.blue,
+    width: "100%",
+    outline: "none",
+    fontSize: commonStyles.text_font_size,
+    boxSizing: "border-box",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: "13px",
+    fontWeight: "600",
+    color: commonStyles.blue,
+    marginBottom: "6px",
+    opacity: 0.7,
+  };
+
+  return (
+    <div
+      style={{
+        padding: "16px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100%",
+      }}
+    >
+            {/* Logo / App Name */}
+<div
+  style={{
+    width: "140px",
+    height: "140px",
+    borderRadius: "50%",
+    backgroundColor: commonStyles.blue,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: "24px",
+  }}
+>
+  <img 
+    src="/opti-via/img/logo_no_back.png" 
+    alt="Opti-Vía" 
+    style={{
+      width: "130px",
+      height: "130px",
+      borderRadius: "50%",
+      objectFit: "contain",
+    }}
+  />
+</div>
+      <p
+        style={{
+          marginTop: "16px",
+          color: commonStyles.blue,
+          textAlign: "center",
+          fontSize: commonStyles.text_font_size,
+        }}
+      >
+        Iniciar sesión
+      </p>
+
+      <div
+        style={{
+          width: "80%",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+          marginTop: "24px",
+        }}
+      >
+        {/* Phone */}
+        <div>
+          <div style={labelStyle}>Teléfono</div>
+          <input
+            type="tel"
+            style={inputStyle}
+            value={phone}
+            onChange={(e) => {
+              setPhone(e.target.value);
+              setError("");
+            }}
+            placeholder="(809) 000-0000"
+          />
+        </div>
+
+        {/* Password */}
+        <div>
+          <div style={labelStyle}>Contraseña</div>
+          <input
+            type="password"
+            style={inputStyle}
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setError("");
+            }}
+            placeholder="Tu contraseña"
+          />
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <p
+            style={{
+              color: "#ff4444",
+              fontSize: "12px",
+              textAlign: "center",
+            }}
+          >
+            {error}
+          </p>
+        )}
+      </div>
+
+      {/* Login Button */}
+      <button
+        onClick={handleLogin}
+        disabled={!phone || !password}
+        style={{
+          backgroundColor: phone && password ? commonStyles.blue : "#CCCCCC",
+          border: "none",
+          width: "80%",
+          borderRadius: "20px",
+          padding: "12px",
+          color: "white",
+          marginTop: "24px",
+          fontSize: commonStyles.button_fontSize,
+          fontWeight: commonStyles.button_fontWeight,
+          cursor: phone && password ? "pointer" : "not-allowed",
+        }}
+      >
+        Entrar
+      </button>
+
+      {/* Link to Sign Up */}
+      <p
+        style={{
+          marginTop: "16px",
+          color: commonStyles.blue,
+          fontSize: "14px",
+          opacity: 0.7,
+        }}
+      >
+        ¿No tienes cuenta?{" "}
+        <span
+          style={{
+            color: commonStyles.green,
+            fontWeight: "600",
+            cursor: "pointer",
+          }}
+          onClick={onSwitchToSignup}
+        >
+          Crear una
+        </span>
+      </p>
+    </div>
+  );
+}
+
+export default Login;

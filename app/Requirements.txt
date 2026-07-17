@@ -1,0 +1,23 @@
+Rutas en Tiempo Real 
+Alertas y Notificaciones
+Horarios y Paradas
+Planifica tu Viaje
+
+
+Brain Storm Secction: 
+
+Pantalla: Planifica tu Viaje
+	Funcion 1: Permite bsucar en un campo una ruta en espesifico y ver los horarios de esa ruta. 
+
+Pantalla: Mapa 
+	Modo A: Muestra localizaciones de paradas. 
+		Funcion 1: Muestra Horarios de la parada 
+		Cuando Se le da doble click a las paradas permite 
+		
+	Modo B: Muestra Ruta de un Bus 
+	Modo C: Muestra la localizacion actual del bus en la rutas y sus paradas. 
+
+
+
+
+

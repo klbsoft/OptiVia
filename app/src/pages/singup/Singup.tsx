@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { commonStyles } from "../../components/theme/default";
 import { useAuth } from "../../context/AuthContext";
-import StepIndicator from "./components/StepIndicator";
-import PersonalDataForm from "./components/PersonalDataForm";
-import CardForm from "./components/CardForm";
-import SuccessMessage from "./components/SuccessMessage";
-import Logo from "./components/Logo";
+import StepIndicator from "./StepIndicator";
+import PersonalDataForm from "./PersonalDataForm";
+import CardForm from "./CardForm";
+import SuccessMessage from "./SuccessMessage";
+import Logo from "./Logo";
 
 export interface SignUpFormData {
   name: string;

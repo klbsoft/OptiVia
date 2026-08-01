@@ -13,7 +13,7 @@ use crate::{components::{dbfactory::{Mongo, db}, encrypt::CryptoService}, identi
 pub async fn signup(Json(user): Json<UserClient>) -> String {
     println!("{:#?}", user);
     
-    // Check if email already exists
+    //  heck if email already exists
     let existing = db()
         .users()
         .find_one(doc! { "email": &user.email })

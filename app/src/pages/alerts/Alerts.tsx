@@ -53,7 +53,12 @@ export default function Alerts() {
   ];
 
   return (
-    <div style={{ padding: "16px", backgroundColor: "#F8F9FA", minHeight: "100vh" }}>
+    <div style={{ 
+      padding: "16px",
+      backgroundColor: "#F8F9FA",
+      height: "100%",
+      overflowY: "auto"
+        }}>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h5 style={{ color: "#0162BF", margin: 0, fontSize: "18px" }}>
           Notificaciones

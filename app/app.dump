@@ -1,0 +1,4168 @@
+./node_modules/@restart/ui/node_modules/uncontrollable/test/types-test.tsx
+./node_modules/uncontrollable/test/types-test.tsx
+./src/context/ViewContext.tsx
+./src/context/AuthContext.tsx
+./src/pages/login/Login.tsx
+./src/pages/singup/StepIndicator.tsx
+./src/pages/singup/Singup.tsx
+./src/pages/singup/SuccessMessage.tsx
+./src/pages/singup/UserTypeSection.tsx
+./src/pages/singup/CardForm.tsx
+./src/pages/singup/PersonalDataForm.tsx
+./src/pages/singup/FileUpload.tsx
+./src/pages/singup/Logo.tsx
+./src/pages/profile/Profile.tsx
+./src/pages/alerts/Alerts.tsx
+./src/pages/cards/Cards.tsx
+./src/pages/searcher/Searcher.tsx
+./src/pages/settings/Settings.tsx
+./src/pages/auth/Auth.tsx
+./src/pages/schedule/Schedule.tsx
+./src/pages/manager/Manager.tsx
+./src/pages/report/Report.tsx
+./src/pages/map/OpenMap.tsx
+./src/pages/map/Map.tsx
+./src/pages/history/History.tsx
+./src/pages/home/Home.tsx
+./src/components/container/Container.tsx
+./src/components/footer/Footer.tsx
+./src/components/body/Body.tsx
+./src/components/menu/Menu.tsx
+./src/components/header/Header.tsx
+./src/main.tsx
+./src/App.tsx
+=== ./node_modules/@restart/ui/node_modules/uncontrollable/test/types-test.tsx ===
+import { useUncontrolled, useUncontrolledProp } from '../src';
+
+interface Props {
+  value?: string;
+  defaultValue: string | undefined;
+  onChange?(value: string, meta: {}): void;
+}
+
+function Foo(props: Props) {
+  // $ExpectType [string, (value: string, meta: {}) => void]
+  const [value, onChange] = useUncontrolledProp(
+    props.value,
+    props.defaultValue,
+    props.onChange
+  );
+}
+
+interface Props2 {
+  value?: string;
+  defaultValue: string | undefined;
+  onChange?(value: string, meta: {}): Promise<void>;
+}
+
+function Foo2(props: Props2) {
+  // $ExpectType [string, (value: string, meta: {}) => void | Promise<void>]
+  const [value, onChange] = useUncontrolledProp(
+    props.value,
+    props.defaultValue,
+    props.onChange
+  );
+}
+
+function FooA(props: Props) {
+  // $ExpectType { value: string, onChange:  (value: string, meta: {}) => void }
+  const a = useUncontrolled<Props, 'defaultValue'>(props, {
+    value: 'onChange',
+  });
+
+  // $ExpectType Props
+  const b = useUncontrolled(props, {
+    value: 'onChange',
+  });
+}
+
+=== ./node_modules/uncontrollable/test/types-test.tsx ===
+import { useUncontrolled, useUncontrolledProp } from '../src'
+
+interface Props {
+  value?: string
+  defaultValue: string | undefined
+  onChange?(value: string, meta: {}): void
+}
+
+function Foo(props: Props) {
+  // $ExpectType [string, (value: string, meta: {}) => void]
+  const [value, onChange] = useUncontrolledProp(
+    props.value,
+    props.defaultValue,
+    props.onChange
+  )
+}
+
+function FooA(props: Props) {
+  // $ExpectType { value: string, onChange:  (value: string, meta: {}) => void }
+  const a = useUncontrolled<Props, 'defaultValue'>(props, {
+    value: 'onChange',
+  })
+
+  // $ExpectType Props
+  const b = useUncontrolled(props, {
+    value: 'onChange',
+  })
+}
+
+=== ./src/context/ViewContext.tsx ===
+// ViewContext.tsx
+import { createContext, useState, useContext, type ReactNode } from "react";
+
+type ViewContextType = {
+  currentView: ReactNode | null;
+  setCurrentView: (view: ReactNode | null) => void;
+};
+
+const ViewContext = createContext<ViewContextType | undefined>(undefined);
+
+export function ViewProvider({ children }: { children: ReactNode }) {
+  const [currentView, setCurrentView] = useState<ReactNode | null>(null);
+
+  return (
+    <ViewContext.Provider value={{ currentView, setCurrentView }}>
+      {children}
+    </ViewContext.Provider>
+  );
+}
+
+export function useView(): ViewContextType {
+  const context = useContext(ViewContext);
+  if (!context) {
+    throw new Error("useView must be used within a ViewProvider");
+  }
+  return context;
+}
+=== ./src/context/AuthContext.tsx ===
+// AuthContext.tsx
+import { createContext, useState, useContext, type ReactNode } from "react";
+
+type AuthContextType = {
+  isAuthenticated: boolean;
+  login: () => void;
+  logout: () => void;
+};
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const login = () => setIsAuthenticated(true);
+  const logout = () => setIsAuthenticated(false);
+
+  return (
+    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth(): AuthContextType {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+}
+=== ./src/pages/login/Login.tsx ===
+import { useState } from "react";
+import { commonStyles } from "../../components/theme/default";
+import { useAuth } from "../../context/AuthContext";
+ 
+function Login({ onSwitchToSignup }: { onSwitchToSignup: () => void }) {  const { login } = useAuth();
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+ 
+
+  const handleLogin = () => {
+    if (!phone || !password) {
+      setError("Todos los campos son requeridos");
+      return;
+    }
+
+    // Mock login - replace with API call
+    console.log("Login:", { phone, password });
+    
+    // Simulate successful login
+    login();
+  };
+
+  const inputStyle: React.CSSProperties = {
+    borderRadius: "20px",
+    padding: "12px 16px",
+    border: `2px solid ${commonStyles.green}`,
+    backgroundColor: "#FFFFFF",
+    color: commonStyles.blue,
+    width: "100%",
+    outline: "none",
+    fontSize: commonStyles.text_font_size,
+    boxSizing: "border-box",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: "13px",
+    fontWeight: "600",
+    color: commonStyles.blue,
+    marginBottom: "6px",
+    opacity: 0.7,
+  };
+
+  return (
+    <div
+      style={{
+        padding: "16px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100%",
+      }}
+    >
+            {/* Logo / App Name */}
+<div
+  style={{
+    width: "140px",
+    height: "140px",
+    borderRadius: "50%",
+    backgroundColor: commonStyles.blue,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: "24px",
+  }}
+>
+  <img 
+    src="/opti-via/img/logo_no_back.png" 
+    alt="Opti-Vía" 
+    style={{
+      width: "130px",
+      height: "130px",
+      borderRadius: "50%",
+      objectFit: "contain",
+    }}
+  />
+</div>
+      <p
+        style={{
+          marginTop: "16px",
+          color: commonStyles.blue,
+          textAlign: "center",
+          fontSize: commonStyles.text_font_size,
+        }}
+      >
+        Iniciar sesión
+      </p>
+
+      <div
+        style={{
+          width: "80%",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+          marginTop: "24px",
+        }}
+      >
+        {/* Phone */}
+        <div>
+          <div style={labelStyle}>Teléfono</div>
+          <input
+            type="tel"
+            style={inputStyle}
+            value={phone}
+            onChange={(e) => {
+              setPhone(e.target.value);
+              setError("");
+            }}
+            placeholder="(809) 000-0000"
+          />
+        </div>
+
+        {/* Password */}
+        <div>
+          <div style={labelStyle}>Contraseña</div>
+          <input
+            type="password"
+            style={inputStyle}
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setError("");
+            }}
+            placeholder="Tu contraseña"
+          />
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <p
+            style={{
+              color: "#ff4444",
+              fontSize: "12px",
+              textAlign: "center",
+            }}
+          >
+            {error}
+          </p>
+        )}
+      </div>
+
+      {/* Login Button */}
+      <button
+        onClick={handleLogin}
+        disabled={!phone || !password}
+        style={{
+          backgroundColor: phone && password ? commonStyles.blue : "#CCCCCC",
+          border: "none",
+          width: "80%",
+          borderRadius: "20px",
+          padding: "12px",
+          color: "white",
+          marginTop: "24px",
+          fontSize: commonStyles.button_fontSize,
+          fontWeight: commonStyles.button_fontWeight,
+          cursor: phone && password ? "pointer" : "not-allowed",
+        }}
+      >
+        Entrar
+      </button>
+
+      {/* Link to Sign Up */}
+      <p
+        style={{
+          marginTop: "16px",
+          color: commonStyles.blue,
+          fontSize: "14px",
+          opacity: 0.7,
+        }}
+      >
+        ¿No tienes cuenta?{" "}
+        <span
+          style={{
+            color: commonStyles.green,
+            fontWeight: "600",
+            cursor: "pointer",
+          }}
+          onClick={onSwitchToSignup}
+        >
+          Crear una
+        </span>
+      </p>
+    </div>
+  );
+}
+
+export default Login;
+=== ./src/pages/singup/StepIndicator.tsx ===
+import { commonStyles } from "../../components/theme/default";
+
+interface StepIndicatorProps {
+  currentStep: "user" | "card";
+  onStepChange: (step: "user" | "card") => void;
+}
+
+function StepIndicator({ currentStep, onStepChange }: StepIndicatorProps) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        gap: "8px",
+        marginTop: "12px",
+        marginBottom: "8px",
+        width: "80%",
+      }}
+    >
+      <button
+        onClick={() => onStepChange("user")}
+        style={{
+          flex: 1,
+          padding: "8px",
+          borderRadius: "20px",
+          border: `2px solid ${commonStyles.green}`,
+          backgroundColor: currentStep === "user" ? commonStyles.blue : "white",
+          color: currentStep === "user" ? "white" : commonStyles.blue,
+          fontSize: "14px",
+          cursor: "pointer",
+        }}
+      >
+        1. Datos personales
+      </button>
+      <button
+        onClick={() => onStepChange("card")}
+        style={{
+          flex: 1,
+          padding: "8px",
+          borderRadius: "20px",
+          border: `2px solid ${commonStyles.green}`,
+          backgroundColor: currentStep === "card" ? commonStyles.blue : "white",
+          color: currentStep === "card" ? "white" : commonStyles.blue,
+          fontSize: "14px",
+          cursor: "pointer",
+        }}
+      >
+        2. Tarjeta (opcional)
+      </button>
+    </div>
+  );
+}
+
+export default StepIndicator;
+=== ./src/pages/singup/Singup.tsx ===
+import { useState } from "react";
+import { commonStyles } from "../../components/theme/default";
+import { useAuth } from "../../context/AuthContext";
+import StepIndicator from "./StepIndicator";
+import PersonalDataForm from "./PersonalDataForm";
+import CardForm from "./CardForm";
+import SuccessMessage from "./SuccessMessage";
+import Logo from "./Logo";
+
+export interface SignUpFormData {
+  name: string;
+  lastName: string;
+  dateOfBirth: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  isSpecialUser: boolean;
+  userType: string;
+  verificationDoc: File | null;
+  docPreview: string | null;
+}
+
+export interface CardFormData {
+  nameOnCard: string;
+  cardNumber: string;
+  expiryDate: string;
+  cvv: string;
+  cardType: string;
+  addCard: boolean;
+}
+
+function SignUp({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
+  const { login } = useAuth();
+  const [step, setStep] = useState<"user" | "card">("user");
+  const [saved, setSaved] = useState(false);
+
+  // Personal data
+  const [formData, setFormData] = useState<SignUpFormData>({
+    name: "",
+    lastName: "",
+    dateOfBirth: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    isSpecialUser: false,
+    userType: "",
+    verificationDoc: null,
+    docPreview: null,
+  });
+
+  // Card data
+  const [cardData, setCardData] = useState<CardFormData>({
+    nameOnCard: "",
+    cardNumber: "",
+    expiryDate: "",
+    cvv: "",
+    cardType: "visa",
+    addCard: false,
+  });
+
+  const handleSignUp = () => {
+    const { name, lastName, email, phone, password, dateOfBirth, isSpecialUser, userType } = formData;
+
+    if (!name || !lastName || !email || !password) return;
+    if (password !== formData.confirmPassword) return;
+
+    const finalUserType = isSpecialUser ? userType : "regular";
+
+    const newUser = {
+      name,
+      last_name: lastName,
+      date_of_birth: dateOfBirth || null,
+      email,
+      phone: phone || null,
+      password_hash: `hashed_${password}`,
+      user_type: finalUserType,
+      is_verified: finalUserType === "regular",
+    };
+
+    console.log("New user:", newUser);
+
+    if (cardData.addCard && cardData.cardNumber && cardData.expiryDate && cardData.cvv) {
+      const newCard = {
+        name_on_card: cardData.nameOnCard || `${name} ${lastName}`,
+        card_number: cardData.cardNumber.replace(/-/g, ""),
+        expiry_date: cardData.expiryDate,
+        cvv: cardData.cvv,
+        card_type: cardData.cardType,
+      };
+      console.log("New card:", newCard);
+    }
+
+    setSaved(true);
+    setTimeout(() => {
+      login();
+    }, 1500);
+  };
+
+  if (saved) {
+    return (
+      <SuccessMessage
+        userType={formData.isSpecialUser ? formData.userType : "regular"}
+      />
+    );
+  }
+
+  const isUserStepValid = () => {
+    const { name, lastName, email, password, confirmPassword, isSpecialUser, userType, verificationDoc } = formData;
+    return name &&
+      lastName &&
+      email &&
+      password &&
+      password === confirmPassword &&
+      (!isSpecialUser || (userType && verificationDoc));
+  };
+
+  return (
+    <div
+      style={{
+        padding: "16px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        overflowY: "auto",
+        height: "100%",
+      }}
+    >
+      <Logo />
+      
+      <p style={{ marginTop: "16px", color: commonStyles.blue, textAlign: "center", fontSize: commonStyles.text_font_size }}>
+        Crear cuenta
+      </p>
+      
+      <p style={{ marginTop: "16px", color: commonStyles.blue, fontSize: "14px", opacity: 0.7 }}>
+        ¿Ya tienes cuenta?{" "}
+        <span style={{ color: commonStyles.green, fontWeight: "600", cursor: "pointer" }} onClick={onSwitchToLogin}>
+          Iniciar sesión
+        </span>
+      </p>
+
+      <StepIndicator currentStep={step} onStepChange={setStep} />
+
+      <div style={{ width: "80%", display: "flex", flexDirection: "column", gap: "16px", marginTop: "8px" }}>
+        {step === "user" ? (
+          <PersonalDataForm formData={formData} setFormData={setFormData} />
+        ) : (
+          <CardForm cardData={cardData} setCardData={setCardData} userName={`${formData.name} ${formData.lastName}`} />
+        )}
+      </div>
+
+      <button
+        onClick={handleSignUp}
+        disabled={step === "user" ? !isUserStepValid() : false}
+        style={{
+          backgroundColor: (step === "user" && !isUserStepValid()) ? "#CCCCCC" : commonStyles.blue,
+          border: "none",
+          width: "80%",
+          borderRadius: "20px",
+          padding: "12px",
+          color: "white",
+          marginTop: "24px",
+          fontSize: commonStyles.button_fontSize,
+          fontWeight: commonStyles.button_fontWeight,
+          cursor: (step === "user" && !isUserStepValid()) ? "not-allowed" : "pointer",
+        }}
+      >
+        Crear cuenta
+      </button>
+    </div>
+  );
+}
+
+export default SignUp;
+=== ./src/pages/singup/SuccessMessage.tsx ===
+import { commonStyles } from "../../components/theme/default";
+
+interface SuccessMessageProps {
+  userType: string;
+}
+
+function SuccessMessage({ userType }: SuccessMessageProps) {
+  return (
+    <div
+      style={{
+        padding: "16px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100%",
+        overflowY: "auto",
+      }}
+    >
+      <div
+        style={{
+          width: "80px",
+          height: "80px",
+          borderRadius: "50%",
+          backgroundColor: commonStyles.green,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: "20px",
+          fontSize: "40px",
+          color: "white",
+        }}
+      >
+        ✓
+      </div>
+      <p style={{ color: commonStyles.green, fontSize: commonStyles.button_fontSize, fontWeight: commonStyles.button_fontWeight, textAlign: "center" }}>
+        ¡Cuenta creada!
+      </p>
+      <p style={{ color: commonStyles.blue, fontSize: commonStyles.text_font_size, textAlign: "center", opacity: 0.7 }}>
+        {userType !== "regular"
+          ? "Tu cuenta será verificada pronto."
+          : "Redirigiendo al inicio..."}
+      </p>
+    </div>
+  );
+}
+
+export default SuccessMessage;
+=== ./src/pages/singup/UserTypeSection.tsx ===
+import type { SignUpFormData } from "./Singup";
+import FileUpload from "./FileUpload";
+import { commonStyles } from "../../components/theme/default";
+
+interface UserTypeSectionProps {
+  formData: SignUpFormData;
+  setFormData: (data: SignUpFormData) => void;
+}
+
+const labelStyle: React.CSSProperties = {
+  fontSize: "13px",
+  fontWeight: "600",
+  color: commonStyles.blue,
+  marginBottom: "6px",
+  opacity: 0.7,
+};
+
+function UserTypeSection({ formData, setFormData }: UserTypeSectionProps) {
+  const updateField = (field: keyof SignUpFormData, value: any) => {
+    setFormData({ ...formData, [field]: value });
+  };
+
+  return (
+    <div
+      style={{
+        marginTop: "8px",
+        padding: "12px",
+        borderRadius: "12px",
+        backgroundColor: "#f8f9fa",
+        border: "1px solid #e0e0e0",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "10px 0",
+        }}
+      >
+        <span style={{ color: commonStyles.blue, fontSize: "14px" }}>
+          ¿Eres servidor público o estudiante?
+        </span>
+        <div
+          onClick={() => {
+            const newValue = !formData.isSpecialUser;
+            updateField("isSpecialUser", newValue);
+            if (!newValue) {
+              updateField("userType", "");
+              updateField("verificationDoc", null);
+              updateField("docPreview", null);
+            }
+          }}
+          style={{
+            width: "48px",
+            height: "26px",
+            borderRadius: "13px",
+            backgroundColor: formData.isSpecialUser ? commonStyles.green : "#CCCCCC",
+            position: "relative",
+            cursor: "pointer",
+            transition: "background-color 0.2s",
+          }}
+        >
+          <div
+            style={{
+              width: "22px",
+              height: "22px",
+              borderRadius: "50%",
+              backgroundColor: "white",
+              position: "absolute",
+              top: "2px",
+              left: formData.isSpecialUser ? "24px" : "2px",
+              transition: "left 0.2s",
+            }}
+          />
+        </div>
+      </div>
+
+      {formData.isSpecialUser && (
+        <>
+          <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #e0e0e0" }}>
+            <div style={labelStyle}>Tipo de beneficio *</div>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <button
+                onClick={() => updateField("userType", "gov")}
+                style={{
+                  flex: 1,
+                  padding: "10px",
+                  borderRadius: "20px",
+                  border: `2px solid ${commonStyles.green}`,
+                  backgroundColor: formData.userType === "gov" ? commonStyles.green : "white",
+                  color: formData.userType === "gov" ? "white" : commonStyles.blue,
+                  fontSize: "13px",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                🏛️ Servidor Público
+              </button>
+              <button
+                onClick={() => updateField("userType", "student")}
+                style={{
+                  flex: 1,
+                  padding: "10px",
+                  borderRadius: "20px",
+                  border: `2px solid ${commonStyles.green}`,
+                  backgroundColor: formData.userType === "student" ? commonStyles.green : "white",
+                  color: formData.userType === "student" ? "white" : commonStyles.blue,
+                  fontSize: "13px",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                }}
+              >
+                🎓 Estudiante
+              </button>
+            </div>
+          </div>
+
+          <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #e0e0e0" }}>
+            <div style={labelStyle}>
+              Documento de verificación *
+              <span style={{ fontSize: "11px", opacity: 0.7, marginLeft: "4px" }}>
+                ({formData.userType === "student" ? "Carnet estudiantil" : "Carnet oficial o ID"})
+              </span>
+            </div>
+
+            <FileUpload
+              file={formData.verificationDoc}
+              preview={formData.docPreview}
+              onFileSelect={(file, preview) => {
+                updateField("verificationDoc", file);
+                updateField("docPreview", preview);
+              }}
+              onFileRemove={() => {
+                updateField("verificationDoc", null);
+                updateField("docPreview", null);
+              }}
+            />
+
+            <p style={{ fontSize: "11px", color: commonStyles.blue, opacity: 0.6, marginTop: "6px" }}>
+              Tu documento será revisado para verificar tu identidad. Los descuentos se aplicarán una vez verificada tu cuenta.
+            </p>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+export default UserTypeSection;
+=== ./src/pages/singup/CardForm.tsx ===
+import { useState } from "react";
+import type { CardFormData } from "./Singup";
+import { commonStyles } from "../../components/theme/default";
+
+interface CardFormProps {
+  cardData: CardFormData;
+  setCardData: (data: CardFormData) => void;
+  userName: string;
+}
+
+const cardTypes = ["visa", "mastercard"];
+
+const formatCardNumber = (value: string): string => {
+  const digits = value.replace(/\D/g, "");
+  const trimmed = digits.slice(0, 16);
+  const groups = trimmed.match(/.{1,4}/g);
+  return groups ? groups.join("-") : "";
+};
+
+const inputStyle: React.CSSProperties = {
+  borderRadius: "20px",
+  padding: "12px 16px",
+  border: `2px solid ${commonStyles.green}`,
+  backgroundColor: "#FFFFFF",
+  color: commonStyles.blue,
+  width: "100%",
+  outline: "none",
+  fontSize: commonStyles.text_font_size,
+  boxSizing: "border-box",
+};
+
+const labelStyle: React.CSSProperties = {
+  fontSize: "13px",
+  fontWeight: "600",
+  color: commonStyles.blue,
+  marginBottom: "6px",
+  opacity: 0.7,
+};
+
+function CardForm({ cardData, setCardData, userName }: CardFormProps) {
+  const [showCardType, setShowCardType] = useState(false);
+
+  const updateField = (field: keyof CardFormData, value: any) => {
+    setCardData({ ...cardData, [field]: value });
+  };
+
+  return (
+    <>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0" }}>
+        <span style={{ color: commonStyles.blue, fontSize: commonStyles.text_font_size }}>
+          ¿Agregar método de pago?
+        </span>
+        <div
+          onClick={() => updateField("addCard", !cardData.addCard)}
+          style={{
+            width: "48px",
+            height: "26px",
+            borderRadius: "13px",
+            backgroundColor: cardData.addCard ? commonStyles.green : "#CCCCCC",
+            position: "relative",
+            cursor: "pointer",
+            transition: "background-color 0.2s",
+          }}
+        >
+          <div
+            style={{
+              width: "22px",
+              height: "22px",
+              borderRadius: "50%",
+              backgroundColor: "white",
+              position: "absolute",
+              top: "2px",
+              left: cardData.addCard ? "24px" : "2px",
+              transition: "left 0.2s",
+            }}
+          />
+        </div>
+      </div>
+
+      {cardData.addCard && (
+        <>
+          <div>
+            <div style={labelStyle}>Nombre en la tarjeta</div>
+            <input
+              type="text"
+              style={inputStyle}
+              value={cardData.nameOnCard}
+              onChange={(e) => updateField("nameOnCard", e.target.value)}
+              placeholder={userName || "Nombre en la tarjeta"}
+            />
+          </div>
+
+          <div>
+            <div style={labelStyle}>Número de tarjeta</div>
+            <input
+              type="text"
+              style={inputStyle}
+              value={cardData.cardNumber}
+              onChange={(e) => updateField("cardNumber", formatCardNumber(e.target.value))}
+              placeholder="0000-0000-0000-0000"
+              maxLength={19}
+            />
+          </div>
+
+          <div>
+            <div style={labelStyle}>Fecha de expiración</div>
+            <input
+              type="date"
+              style={inputStyle}
+              value={cardData.expiryDate}
+              onChange={(e) => updateField("expiryDate", e.target.value)}
+            />
+          </div>
+
+          <div>
+            <div style={labelStyle}>CVV</div>
+            <input
+              type="text"
+              style={inputStyle}
+              value={cardData.cvv}
+              onChange={(e) => updateField("cvv", e.target.value.replace(/\D/g, "").slice(0, 3))}
+              placeholder="123"
+              maxLength={3}
+            />
+          </div>
+
+          <div>
+            <div style={labelStyle}>Tipo de tarjeta</div>
+            <div style={{ position: "relative" }}>
+              <div
+                onClick={() => setShowCardType(!showCardType)}
+                style={{ ...inputStyle, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+              >
+                <span>{cardData.cardType === "visa" ? "Visa" : "Mastercard"}</span>
+                <span style={{ color: commonStyles.green }}>▼</span>
+              </div>
+              {showCardType && (
+                <div style={{ position: "absolute", top: "100%", left: 0, right: 0, backgroundColor: "white", border: "1px solid #E0E0E0", borderRadius: "12px", marginTop: "4px", zIndex: 1000 }}>
+                  {cardTypes.map((type) => (
+                    <div
+                      key={type}
+                      onClick={() => { updateField("cardType", type); setShowCardType(false); }}
+                      style={{
+                        padding: "12px 16px",
+                        cursor: "pointer",
+                        borderBottom: "1px solid #f0f0f0",
+                        color: commonStyles.blue,
+                        backgroundColor: cardData.cardType === type ? "rgba(108, 194, 74, 0.1)" : "white",
+                      }}
+                    >
+                      {type === "visa" ? "Visa" : "Mastercard"}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
+export default CardForm;
+=== ./src/pages/singup/PersonalDataForm.tsx ===
+
+import { commonStyles } from "../../components/theme/default";
+import type { SignUpFormData } from "./Singup";
+import UserTypeSection from "./UserTypeSection";
+
+interface PersonalDataFormProps {
+  formData: SignUpFormData;
+  setFormData: (data: SignUpFormData) => void;
+}
+
+const inputStyle: React.CSSProperties = {
+  borderRadius: "20px",
+  padding: "12px 16px",
+  border: `2px solid ${commonStyles.green}`,
+  backgroundColor: "#FFFFFF",
+  color: commonStyles.blue,
+  width: "100%",
+  outline: "none",
+  fontSize: commonStyles.text_font_size,
+  boxSizing: "border-box",
+};
+
+const labelStyle: React.CSSProperties = {
+  fontSize: "13px",
+  fontWeight: "600",
+  color: commonStyles.blue,
+  marginBottom: "6px",
+  opacity: 0.7,
+};
+
+function PersonalDataForm({ formData, setFormData }: PersonalDataFormProps) {
+  const updateField = (field: keyof SignUpFormData, value: any) => {
+    setFormData({ ...formData, [field]: value });
+  };
+
+  return (
+    <>
+      <div>
+        <div style={labelStyle}>Nombre *</div>
+        <input
+          style={inputStyle}
+          value={formData.name}
+          onChange={(e) => updateField("name", e.target.value)}
+          placeholder="Tu nombre"
+        />
+      </div>
+
+      <div>
+        <div style={labelStyle}>Apellido *</div>
+        <input
+          style={inputStyle}
+          value={formData.lastName}
+          onChange={(e) => updateField("lastName", e.target.value)}
+          placeholder="Tu apellido"
+        />
+      </div>
+
+      <div>
+        <div style={labelStyle}>Fecha de nacimiento</div>
+        <input
+          type="date"
+          style={inputStyle}
+          value={formData.dateOfBirth}
+          onChange={(e) => updateField("dateOfBirth", e.target.value)}
+        />
+      </div>
+
+      <div>
+        <div style={labelStyle}>Correo electrónico *</div>
+        <input
+          type="email"
+          style={inputStyle}
+          value={formData.email}
+          onChange={(e) => updateField("email", e.target.value)}
+          placeholder="correo@ejemplo.com"
+        />
+      </div>
+
+      <div>
+        <div style={labelStyle}>Teléfono</div>
+        <input
+          type="tel"
+          style={inputStyle}
+          value={formData.phone}
+          onChange={(e) => updateField("phone", e.target.value)}
+          placeholder="(809) 000-0000"
+        />
+      </div>
+
+      <UserTypeSection formData={formData} setFormData={setFormData} />
+
+      <div>
+        <div style={labelStyle}>Contraseña *</div>
+        <input
+          type="password"
+          style={inputStyle}
+          value={formData.password}
+          onChange={(e) => updateField("password", e.target.value)}
+          placeholder="Mínimo 6 caracteres"
+        />
+      </div>
+
+      <div>
+        <div style={labelStyle}>Confirmar contraseña *</div>
+        <input
+          type="password"
+          style={inputStyle}
+          value={formData.confirmPassword}
+          onChange={(e) => updateField("confirmPassword", e.target.value)}
+          placeholder="Repite tu contraseña"
+        />
+        {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+          <p style={{ color: "#ff4444", fontSize: "12px", marginTop: "4px" }}>
+            Las contraseñas no coinciden
+          </p>
+        )}
+      </div>
+    </>
+  );
+}
+
+export default PersonalDataForm;
+=== ./src/pages/singup/FileUpload.tsx ===
+import { commonStyles } from "../../components/theme/default";
+
+interface FileUploadProps {
+  file: File | null;
+  preview: string | null;
+  onFileSelect: (file: File, preview: string) => void;
+  onFileRemove: () => void;
+}
+
+function FileUpload({ file, preview, onFileSelect, onFileRemove }: FileUploadProps) {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onFileSelect(selectedFile, reader.result as string);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+
+  if (!file) {
+    return (
+      <label
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "8px",
+          padding: "16px",
+          borderRadius: "12px",
+          border: `2px dashed ${commonStyles.green}`,
+          backgroundColor: "white",
+          cursor: "pointer",
+          color: commonStyles.blue,
+          fontSize: "14px",
+          transition: "all 0.2s ease",
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#f0f7ff"; }}
+        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "white"; }}
+      >
+        <span style={{ fontSize: "24px" }}>📷</span>
+        <span>Subir documento</span>
+        <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: "none" }} />
+      </label>
+    );
+  }
+
+  return (
+    <div style={{ borderRadius: "12px", border: `2px solid ${commonStyles.green}`, overflow: "hidden" }}>
+      {preview && (
+        <img
+          src={preview}
+          alt="Document preview"
+          style={{ width: "100%", height: "150px", objectFit: "cover" }}
+        />
+      )}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", backgroundColor: "#f8f9fa" }}>
+        <span style={{ fontSize: "12px", color: commonStyles.blue, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+          {file.name}
+        </span>
+        <button onClick={onFileRemove} style={{ background: "none", border: "none", color: "#ff4444", cursor: "pointer", fontSize: "20px", padding: "0 4px" }}>
+          ✕
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default FileUpload;
+=== ./src/pages/singup/Logo.tsx ===
+import { commonStyles } from "../../components/theme/default";
+
+function Logo() {
+  return (
+    <div
+      style={{
+        width: "140px",
+        height: "140px",
+        borderRadius: "50%",
+        backgroundColor: commonStyles.blue,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: "24px",
+      }}
+    >
+      <img
+        src="/opti-via/img/logo_no_back.png"
+        alt="Opti-Vía"
+        style={{
+          width: "130px",
+          height: "130px",
+          borderRadius: "50%",
+          objectFit: "contain",
+        }}
+      />
+    </div>
+  );
+}
+
+export default Logo;
+=== ./src/pages/profile/Profile.tsx ===
+import { useState } from "react";
+import { commonStyles } from "../../components/theme/default";
+
+const mockUser = {
+  name: "Ana",
+  last_name: "García",
+  date_of_birth: "1995-03-14",
+  email: "ana.garcia@email.com",
+  phone: "(809) 343-8383",
+};
+
+function Profile() {
+  const [user, setUser] = useState(mockUser);
+  const [saved, setSaved] = useState(false);
+
+  const handleChange = (field: string, value: string) => {
+    setUser((prev) => ({ ...prev, [field]: value }));
+    setSaved(false);
+  };
+
+  const handleSave = () => {
+    setSaved(true);
+    console.log("Guardado:", user);
+    // API call here later
+  };
+
+  const inputStyle: React.CSSProperties = {
+    borderRadius: "20px",
+    padding: "12px 16px",
+    border: `2px solid ${commonStyles.green}`,
+    backgroundColor: "#FFFFFF",
+    color: commonStyles.blue,
+    width: "100%",
+    outline: "none",
+    fontSize: commonStyles.text_font_size,
+    boxSizing: "border-box",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: "13px",
+    fontWeight: "600",
+    color: commonStyles.blue,
+    marginBottom: "6px",
+    opacity: 0.7,
+  };
+
+  return (
+    <div
+      style={{
+        padding: "16px",
+        paddingTop: "16px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <p
+        style={{
+          marginTop: "16px",
+          color: commonStyles.blue,
+          textAlign: "center",
+          fontSize: commonStyles.text_font_size,
+        }}
+      >
+        Información personal
+      </p>
+
+      {/* Avatar */}
+      {/* <div
+        style={{
+          width: "80px",
+          height: "80px",
+          borderRadius: "50%",
+          backgroundColor: commonStyles.blue,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "16px 0 24px 0",
+          fontSize: "32px",
+          fontWeight: "700",
+          color: "white",
+        }}
+      >
+        {user.name.charAt(0)}
+        {user.last_name.charAt(0)}
+      </div> */}
+
+      {/* Fields */}
+      <div
+        style={{
+          width: "80%",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+        }}
+      >
+        {/* Name */}
+        <div>
+          <div style={labelStyle}>Nombre</div>
+          <input
+            style={inputStyle}
+            value={user.name}
+            onChange={(e) => handleChange("name", e.target.value)}
+          />
+        </div>
+
+        {/* Last Name */}
+        <div>
+          <div style={labelStyle}>Apellido</div>
+          <input
+            style={inputStyle}
+            value={user.last_name}
+            onChange={(e) => handleChange("last_name", e.target.value)}
+          />
+        </div>
+
+        {/* Date of Birth */}
+        <div>
+          <div style={labelStyle}>Fecha de nacimiento</div>
+          <input
+            type="date"
+            style={inputStyle}
+            value={user.date_of_birth}
+            onChange={(e) => handleChange("date_of_birth", e.target.value)}
+          />
+        </div>
+
+        {/* Email */}
+        <div>
+          <div style={labelStyle}>Correo electrónico</div>
+          <input
+            type="email"
+            style={inputStyle}
+            value={user.email}
+            onChange={(e) => handleChange("email", e.target.value)}
+          />
+        </div>
+
+        {/* Phone */}
+        <div>
+          <div style={labelStyle}>Teléfono</div>
+          <input
+            type="tel"
+            style={inputStyle}
+            value={user.phone}
+            onChange={(e) => handleChange("phone", e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Save Button */}
+      <button
+        onClick={handleSave}
+        style={{
+          backgroundColor: saved ? commonStyles.green : commonStyles.blue,
+          border: "none",
+          width: "80%",
+          borderRadius: "20px",
+          padding: "12px",
+          color: "white",
+          marginTop: "24px",
+          fontSize: commonStyles.button_fontSize,
+          fontWeight: commonStyles.button_fontWeight,
+          cursor: "pointer",
+        }}
+      >
+        {saved ? "✓ Guardado" : "Guardar"}
+      </button>
+    </div>
+  );
+}
+
+export default Profile;
+=== ./src/pages/alerts/Alerts.tsx ===
+import { ListGroup } from "react-bootstrap";
+
+export default function Alerts() {
+  const notifications = [
+    {
+      id: 1,
+      title: "Tu ruta está por llegar",
+      message: "El autobús de San Isidro llegará en 5 minutos",
+      time: "Ahora",
+      read: false,
+      color: "#6CC24A"
+    },
+    {
+      id: 2,
+      title: "Retraso en la ruta",
+      message: "Tráfico pesado en Carretera Mella. +10 min de retraso",
+      time: "Hace 15 min",
+      read: false,
+      color: "#FF6B8A"
+    },
+    {
+      id: 3,
+      title: "Pago confirmado",
+      message: "Tu recarga de RD$100 fue exitosa",
+      time: "Hace 2 horas",
+      read: true,
+      color: "#0367C7"
+    },
+    {
+      id: 4,
+      title: "Promoción especial",
+      message: "Viajes a RD$15 este fin de semana",
+      time: "Ayer",
+      read: true,
+      color: "#FFD200"
+    },
+    {
+      id: 5,
+      title: "Nueva parada cercana",
+      message: "Se agregó una parada en la Av. San Vicente",
+      time: "Ayer",
+      read: true,
+      color: "#6CC24A"
+    },
+    {
+      id: 6,
+      title: "Recordatorio",
+      message: "Tu viaje programado para mañana 8:00 AM",
+      time: "Ayer",
+      read: true,
+      color: "#0162BF"
+    }
+  ];
+
+  return (
+    <div style={{ padding: "16px", backgroundColor: "#F8F9FA", minHeight: "100vh" }}>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h5 style={{ color: "#0162BF", margin: 0, fontSize: "18px" }}>
+          Notificaciones
+        </h5>
+        <span style={{ color: "#6CC24A", fontSize: "14px", cursor: "pointer" }}>
+          Marcar todas como leídas
+        </span>
+      </div>
+
+      <ListGroup style={{ borderRadius: "14px", overflow: "hidden" }}>
+        {notifications.map((notif) => (
+          <ListGroup.Item 
+            key={notif.id}
+            className="d-flex align-items-start"
+            style={{ 
+              borderLeft: "none", 
+              borderRight: "none",
+              borderTop: "none",
+              borderBottom: "1px solid #EEE",
+              backgroundColor: notif.read ? "#FFFFFF" : "#F0F7FF",
+              padding: "14px 12px",
+              cursor: "pointer"
+            }}
+          >
+            <div style={{ 
+              width: "4px", 
+              height: "40px", 
+              backgroundColor: notif.color,
+              borderRadius: "4px",
+              marginRight: "12px"
+            }} />
+            
+            <div style={{ flex: 1 }}>
+              <div className="d-flex justify-content-between align-items-center mb-1">
+                <span style={{ 
+                  color: "#0162BF", 
+                  fontWeight: notif.read ? 400 : 600,
+                  fontSize: "14px"
+                }}>
+                 {notif.title + "\t\t"} 
+                </span>
+                <span style={{ color: "#999", fontSize: "14px" }}>
+                     
+                  {  notif.time  }
+                </span>
+              </div>
+              <p style={{ 
+                color: "#666", 
+                fontSize: "14px", 
+                margin: 0 
+              }}>
+                {notif.message}
+              </p>
+            </div>
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+    </div>
+  );
+}
+=== ./src/pages/cards/Cards.tsx ===
+import { useState } from "react";
+import { commonStyles } from "../../components/theme/default";
+
+interface Card {
+  id: string;
+  cardNumber: string;
+  expiryDate: string;
+  cvv: string;
+  cardType: string;
+}
+
+function Cards() {
+  const [nameOnCard, setNameOnCard] = useState("");
+
+  const [cardNumber, setCardNumber] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [cardType, setCardType] = useState("visa");
+  const [showCardType, setShowCardType] = useState(false);
+  const [savedCards, setSavedCards] = useState<Card[]>([]);
+
+  const cardTypes = ["visa", "mastercard"];
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Create new card object
+    const newCard: Card = {
+      id: Date.now().toString(),
+      cardNumber,
+      expiryDate,
+      cvv,
+      cardType
+    };
+    
+    // Add card to the list
+    setSavedCards([...savedCards, newCard]);
+    
+    // Clear form fields
+    setCardNumber("");
+    setExpiryDate("");
+    setCvv("");
+    setNameOnCard("");
+    setCardType("visa");
+    
+    console.log({ cardNumber, expiryDate, cvv, cardType });
+  };
+
+  const handleRemoveCard = (cardId: string) => {
+    setSavedCards(savedCards.filter(card => card.id !== cardId));
+  };
+
+  const maskCardNumber = (number: string) => {
+    return `**** **** **** ${number.slice(-4)}`;
+  };
+const formatCardNumber = (value: string): string => {
+  // Remove all non-digit characters
+  const digits = value.replace(/\D/g, '');
+  
+  // Limit to 16 digits
+  const trimmed = digits.slice(0, 16);
+  
+  // Add dash after every 4 digits
+  const groups = trimmed.match(/.{1,4}/g);
+  return groups ? groups.join('-') : '';
+};
+  return (
+    <div style={{ 
+      padding: "16px", 
+      paddingTop: "16px",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center"
+    }}>
+      <p style={{ marginTop: "16px", color: commonStyles.blue, textAlign: "center" }}>
+        Agregar o administrar tarjetas
+      </p>
+
+
+      <div style={{ position: "relative", width: "100%", marginBottom: "16px", display: "flex", justifyContent: "center" }}>
+        <input
+          type="text"
+          placeholder="Nombre en la Tarjeta (opcional)."
+          maxLength={16}
+          value={nameOnCard}
+          onChange={(e) => setNameOnCard(e.target.value)}
+          style={{
+            borderRadius: "20px",
+            padding: "12px 16px",
+            border: `2px solid ${commonStyles.green}`,
+            backgroundColor: "#FFFFFF",
+            color: commonStyles.blue,
+            width: "80%",
+            outline: "none",
+            fontSize: commonStyles.text_font_size
+          }}
+        />
+      </div>
+            <div style={{ position: "relative", width: "100%", marginBottom: "16px", display: "flex", justifyContent: "center" }}>
+        <input
+          type="text"
+          placeholder="Número de Tarjeta"
+          maxLength={19}
+          value={cardNumber}
+          onChange={(e) => {
+              const formatted = formatCardNumber(e.target.value);
+              setCardNumber(formatted);
+          }}
+          style={{
+            borderRadius: "20px",
+            padding: "12px 16px",
+            border: `2px solid ${commonStyles.green}`,
+            backgroundColor: "#FFFFFF",
+            color: commonStyles.blue,
+            width: "80%",
+            outline: "none",
+            fontSize: commonStyles.text_font_size
+          }}
+        />
+      </div>
+
+      <div style={{ position: "relative", width: "100%", marginBottom: "16px", display: "flex", justifyContent: "center" }}>
+        <input
+          type="date"
+          placeholder="Fecha de Expiración (MM/YY)"
+          maxLength={5}
+          value={expiryDate}
+          onChange={(e) => setExpiryDate(e.target.value)}
+          style={{
+            borderRadius: "20px",
+            padding: "12px 16px",
+            border: `2px solid ${commonStyles.green}`,
+            backgroundColor: "#FFFFFF",
+            color: commonStyles.blue,
+            width: "80%",
+            outline: "none",
+            fontSize: commonStyles.text_font_size
+          }}
+        />
+      </div>
+
+      <div style={{ position: "relative", width: "100%", marginBottom: "16px", display: "flex", justifyContent: "center" }}>
+        <input
+          type="text"
+          placeholder="CVV"
+          maxLength={3}
+          value={cvv}
+              onChange={(e) => {
+            const value = e.target.value.replace(/\D/g, '');
+            setCvv(value);
+          }}
+          style={{
+            borderRadius: "20px",
+            padding: "12px 16px",
+            border: `2px solid ${commonStyles.green}`,
+            backgroundColor: "#FFFFFF",
+            color: commonStyles.blue,
+            width: "80%",
+            outline: "none",
+            fontSize: commonStyles.text_font_size
+          }}
+        />
+      </div>
+
+      <div style={{ position: "relative", width: "100%", marginBottom: "16px", display: "flex", justifyContent: "center" }}>
+        <div
+          onClick={() => setShowCardType(!showCardType)}
+          style={{
+            borderRadius: "20px",
+            padding: "12px 16px",
+            border: `2px solid ${commonStyles.green}`,
+            backgroundColor: "#FFFFFF",
+            color: commonStyles.blue,
+            width: "80%",
+            cursor: "pointer",
+            position: "relative",
+            fontSize: commonStyles.text_font_size
+          }}
+        >
+          {cardType === "visa" ? "Visa" : "Mastercard"}
+          <span style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", color: commonStyles.green }}>▼</span>
+        </div>
+
+        {showCardType && (
+          <div style={{
+            position: "absolute",
+            top: "100%",
+            left: "10%",
+            right: "10%",
+            backgroundColor: "white",
+            border: "1px solid #E0E0E0",
+            borderRadius: "12px",
+            marginTop: "4px",
+            zIndex: 1000,
+            maxHeight: "200px",
+            overflowY: "auto"
+          }}>
+            {cardTypes.map((type) => (
+              <div
+                key={type}
+                onClick={() => { setCardType(type); setShowCardType(false); }}
+                style={{
+                  padding: "12px 16px",
+                  cursor: "pointer",
+                  borderBottom: "1px solid #f0f0f0",
+                  color: commonStyles.blue
+                }}
+              >
+                {type === "visa" ? "Visa" : "Mastercard"}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <button
+        onClick={handleSubmit}
+        style={{
+          backgroundColor: commonStyles.blue,
+          border: "none",
+          width: "80%",
+          borderRadius: "20px",
+          padding: "12px",
+          color: "white",
+          marginTop: "16px",
+          fontSize: commonStyles.button_fontSize,
+          fontWeight: commonStyles.button_fontWeight,
+          cursor: "pointer"
+        }}
+      >
+        Guardar Tarjeta
+      </button>
+
+      {/* Saved Cards List */}
+      {savedCards.length > 0 && (
+        <div style={{ width: "80%", marginTop: "32px" }}>
+          <h3 style={{ 
+            color: commonStyles.blue, 
+            textAlign: "center",
+            marginBottom: "16px",
+            fontSize: commonStyles.text_font_size
+          }}>
+            Tarjetas Guardadas
+          </h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            {savedCards.map((card) => (
+              <div
+                key={card.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  borderRadius: "20px",
+                  padding: "12px 16px",
+                  border: `2px solid ${commonStyles.green}`,
+                  backgroundColor: "#FFFFFF",
+                  color: commonStyles.blue,
+                  fontSize: commonStyles.text_font_size
+                }}
+              >
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: "bold", marginBottom: "4px" }}>
+                    {card.cardType === "visa" ? "Visa" : "Mastercard"}
+                  </div>
+                  <div style={{ fontSize: "14px", opacity: 0.8 }}>
+                    {maskCardNumber(card.cardNumber)}
+                  </div>
+                  <div style={{ fontSize: "12px", opacity: 0.6 }}>
+                    Exp: {card.expiryDate}
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleRemoveCard(card.id)}
+                  style={{
+                    backgroundColor: "#ff4444",
+                    border: "none",
+                    borderRadius: "20px",
+                    padding: "8px 16px",
+                    color: "white",
+                    cursor: "pointer",
+                    fontSize: commonStyles.text_font_size,
+                    fontWeight: "bold",
+                    minWidth: "80px"
+                  }}
+                >
+                  Eliminar
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default Cards;
+=== ./src/pages/searcher/Searcher.tsx ===
+import {  Image, Button } from "react-bootstrap";
+import { useState } from "react";
+import { useView } from "../../context/ViewContext";
+import Map from "../map/Map"
+export default function Searcher() {
+  const [origen, setOrigen] = useState("");
+  const [destino, setDestino] = useState("");
+  const [showOrigen, setShowOrigen] = useState(false);
+  const [showDestino, setShowDestino] = useState(false);
+  const { setCurrentView } = useView();
+
+  const lugares = ["Autopista de San Isidro", "Carretera Mella"];
+
+  const handleBuscar = () => {
+    //alert(`${showDestino} ${showOrigen}`);
+     if (!showDestino && !showOrigen){
+        setCurrentView(<Map/>)
+     }
+  };
+
+  return (
+    <>
+      <div style={{ padding: "16px",paddingTop:"16px" }}>
+        
+        <p style={{ marginTop: "16px", color: "#0162BF" }}>
+          Solo necesitamos un poquito más de información.
+        </p>
+        
+        {/* Origen */}
+        <div style={{ position: "relative", width: "100%", marginBottom: "16px" }}>
+          <div 
+            onClick={() => setShowOrigen(!showOrigen)}
+            style={{ 
+              borderRadius: "20px",
+              padding: "12px 16px 12px 50px",
+              border: "2px solid #6CC24A",
+              backgroundColor: "#FFFFFF",
+              color: origen ? "#0162BF" : "#999",
+              width: "80%",
+              cursor: "pointer",
+              position: "relative"
+            }}
+          >
+            {origen || "Lugar de partida"}
+            <span style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", color: "#6CC24A" }}>▼</span>
+          </div>
+          
+          {showOrigen && (
+            <div style={{ 
+              position: "absolute", 
+              top: "100%", 
+              left: 0, 
+              right: 0, 
+              backgroundColor: "white",
+              border: "1px solid #E0E0E0",
+              borderRadius: "12px",
+              marginTop: "4px",
+              zIndex: 1000,
+              maxHeight: "200px",
+              overflowY: "auto"
+            }}>
+              {lugares.map((lugar) => (
+                <div 
+                  key={lugar}
+                  onClick={() => { setOrigen(lugar); setShowOrigen(false); }}
+                  style={{ 
+                    padding: "12px 16px", 
+                    cursor: "pointer",
+                    borderBottom: "1px solid #f0f0f0",
+                    color: "#0162BF"
+                  }}
+                >
+                  {lugar}
+                </div>
+              ))}
+            </div>
+          )}
+          
+          <Image 
+            src="/opti-via/img/groadmap.png" 
+            alt="Rutas"
+            height="24"
+            width="24"
+            style={{ 
+              position: "absolute",
+              left: "16px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              pointerEvents: "none"
+            }} 
+          />
+        </div>
+
+        {/* Destino */}
+        <div style={{ position: "relative", width: "100%", marginBottom: "16px" }}>
+          <div 
+            onClick={() => setShowDestino(!showDestino)}
+            style={{ 
+              borderRadius: "20px",
+              padding: "12px 16px 12px 50px",
+              border: "2px solid #6CC24A",
+              backgroundColor: "#FFFFFF",
+              color: destino ? "#0162BF" : "#999",
+              width: "80%",
+              cursor: "pointer",
+              position: "relative"
+            }}
+          >
+            {destino || "Lugar de llegada"}
+            <span style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", color: "#6CC24A" }}>▼</span>
+          </div>
+          
+          {showDestino && (
+            <div style={{ 
+              position: "absolute", 
+              top: "100%", 
+              left: 0, 
+              right: 0, 
+              backgroundColor: "white",
+              border: "1px solid #E0E0E0",
+              borderRadius: "12px",
+              marginTop: "4px",
+              zIndex: 1000,
+              maxHeight: "200px",
+              overflowY: "auto"
+            }}>
+              {lugares.map((lugar) => (
+                <div 
+                  key={lugar}
+                  onClick={() => { setDestino(lugar); setShowDestino(false); }}
+                  style={{ 
+                    padding: "12px 16px", 
+                    cursor: "pointer",
+                    borderBottom: "1px solid #f0f0f0",
+                    color: "#0162BF"
+                  }}
+                >
+                  {lugar}
+                </div>
+              ))}
+            </div>
+          )}
+          
+          <Image 
+            src="/opti-via/img/groadmap.png" 
+            alt="Rutas"
+            height="24"
+            width="24"
+            style={{ 
+              position: "absolute",
+              left: "16px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              pointerEvents: "none"
+            }} 
+          />
+        </div>
+
+        <Button 
+          style={{ 
+            backgroundColor: "#0367C7", 
+            border: "none",
+            width: "100%",
+            borderRadius: "20px",
+            padding: "12px",
+            color: "white",
+            marginTop: "16px"
+          }}
+          onClick={handleBuscar}
+          disabled={!origen || !destino}
+        >
+          Buscar ruta
+        </Button>
+      </div>
+    </>
+  );
+}
+=== ./src/pages/settings/Settings.tsx ===
+import { useState } from "react";
+import { commonStyles } from "../../components/theme/default";
+import { useView } from "../../context/ViewContext";
+import Report from "../report/Report";
+
+function Settings() {
+  const { setCurrentView } = useView();
+  const [notifications, setNotifications] = useState({
+    trip_updates: true,
+    payment_reminders: true,
+    security_alerts: true,
+    promotions: false,
+  });
+  const [language, setLanguage] = useState("es");
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
+
+  const languages = [
+    { value: "es", label: "Español" },
+    { value: "en", label: "English" },
+  ];
+
+const handleToggle = (key: keyof typeof notifications) => {
+  setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
+};
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: "13px",
+    fontWeight: "600",  
+    color: commonStyles.blue,
+    marginBottom: "6px",
+    opacity: 0.7,
+  };
+
+  const toggleRowStyle: React.CSSProperties = {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "12px 0",
+    borderBottom: "1px solid rgba(0,0,0,0.05)",
+  };
+
+  const toggleSwitchStyle = (active: boolean): React.CSSProperties => ({
+    width: "48px",
+    height: "26px",
+    borderRadius: "13px",
+    backgroundColor: active ? commonStyles.green : "#CCCCCC",
+    position: "relative",
+    cursor: "pointer",
+    transition: "background-color 0.2s",
+  });
+
+  const toggleCircleStyle = (active: boolean): React.CSSProperties => ({
+    width: "22px",
+    height: "22px",
+    borderRadius: "50%",
+    backgroundColor: "white",
+    position: "absolute",
+    top: "2px",
+    left: active ? "24px" : "2px",
+    transition: "left 0.2s",
+  });
+
+  return (
+    <div
+      style={{
+        padding: "16px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <p
+        style={{
+          marginTop: "16px",
+          color: commonStyles.blue,
+          textAlign: "center",
+          fontSize: commonStyles.text_font_size,
+        }}
+      >
+        Configuración
+      </p>
+
+      <div
+        style={{
+          width: "80%",
+          display: "flex",
+          flexDirection: "column",
+          gap: "8px",
+          marginTop: "8px",
+        }}
+      >
+        {/* Notifications Section */}
+        <div style={{ marginBottom: "16px" }}>
+          <div style={labelStyle}>Notificaciones</div>
+          
+          <div style={toggleRowStyle}>
+            <span style={{ color: commonStyles.blue, fontSize: commonStyles.text_font_size }}>
+              Actualizaciones de viaje
+            </span>
+            <div
+              style={toggleSwitchStyle(notifications.trip_updates)}
+              onClick={() => handleToggle("trip_updates")}
+            >
+              <div style={toggleCircleStyle(notifications.trip_updates)} />
+            </div>
+          </div>
+
+          <div style={toggleRowStyle}>
+            <span style={{ color: commonStyles.blue, fontSize: commonStyles.text_font_size }}>
+              Recordatorios de pago
+            </span>
+            <div
+              style={toggleSwitchStyle(notifications.payment_reminders)}
+              onClick={() => handleToggle("payment_reminders")}
+            >
+              <div style={toggleCircleStyle(notifications.payment_reminders)} />
+            </div>
+          </div>
+
+          <div style={toggleRowStyle}>
+            <span style={{ color: commonStyles.blue, fontSize: commonStyles.text_font_size }}>
+              Alertas de seguridad
+            </span>
+            <div
+              style={toggleSwitchStyle(notifications.security_alerts)}
+              onClick={() => handleToggle("security_alerts")}
+            >
+              <div style={toggleCircleStyle(notifications.security_alerts)} />
+            </div>
+          </div>
+
+          <div style={toggleRowStyle}>
+            <span style={{ color: commonStyles.blue, fontSize: commonStyles.text_font_size }}>
+              Promociones
+            </span>
+            <div
+              style={toggleSwitchStyle(notifications.promotions)}
+              onClick={() => handleToggle("promotions")}
+            >
+              <div style={toggleCircleStyle(notifications.promotions)} />
+            </div>
+          </div>
+        </div>
+
+        {/* Language Section */}
+        <div style={{ marginBottom: "16px" }}>
+          <div style={labelStyle}>Idioma</div>
+          <div style={{ position: "relative" }}>
+            <div
+              onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+              style={{
+                borderRadius: "20px",
+                padding: "12px 16px",
+                border: `2px solid ${commonStyles.green}`,
+                backgroundColor: "#FFFFFF",
+                color: commonStyles.blue,
+                width: "100%",
+                outline: "none",
+                fontSize: commonStyles.text_font_size,
+                boxSizing: "border-box",
+                cursor: "pointer",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <span>{languages.find(l => l.value === language)?.label}</span>
+              <span style={{ color: commonStyles.green }}>▼</span>
+            </div>
+
+            {showLanguageDropdown && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  right: 0,
+                  backgroundColor: "white",
+                  border: "1px solid #E0E0E0",
+                  borderRadius: "12px",
+                  marginTop: "4px",
+                  zIndex: 1000,
+                }}
+              >
+                {languages.map((lang) => (
+                  <div
+                    key={lang.value}
+                    onClick={() => {
+                      setLanguage(lang.value);
+                      setShowLanguageDropdown(false);
+                    }}
+                    style={{
+                      padding: "12px 16px",
+                      cursor: "pointer",
+                      borderBottom: "1px solid #f0f0f0",
+                      color: commonStyles.blue,
+                      backgroundColor:
+                        language === lang.value ? "rgba(108, 194, 74, 0.1)" : "white",
+                    }}
+                  >
+                    {lang.label}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Report Issue Button */}
+      <button
+        onClick={() => setCurrentView(<Report />)}
+        style={{
+          backgroundColor: "#ff4444",
+          border: "none",
+          width: "80%",
+          borderRadius: "20px",
+          padding: "12px",
+          color: "white",
+          marginTop: "24px",
+          fontSize: commonStyles.button_fontSize,
+          fontWeight: commonStyles.button_fontWeight,
+          cursor: "pointer",
+        }}
+      >
+        Reportar un problema
+      </button>
+    </div>
+  );
+}
+
+export default Settings;
+=== ./src/pages/auth/Auth.tsx ===
+import { useState } from "react";
+import { commonStyles } from "../../components/theme/default";
+import Login from "../login/Login";
+import SignUp from "../singup/Singup";
+
+function Auth() {
+  const [view, setView] = useState<"choice" | "login" | "signup">("choice");
+
+  if (view === "login") return <Login onSwitchToSignup={() => setView("signup")} />;
+  if (view === "signup") return <SignUp onSwitchToLogin={() => setView("login")} />;
+
+  return (
+    <div
+      style={{
+        padding: "16px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100%",
+      }}
+    >
+      {/* Logo / App Name */}
+<div
+  style={{
+    width: "250px",
+    height: "250px",
+    borderRadius: "50%",
+    backgroundColor: commonStyles.blue,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: "24px",
+  }}
+>
+  <img 
+    src="/opti-via/img/logo_no_back.png" 
+    alt="Opti-Vía" 
+    style={{
+      width: "240px",
+      height: "240px",
+      borderRadius: "50%",
+      objectFit: "contain",
+    }}
+  />
+</div>
+
+      <p
+        style={{
+          color: commonStyles.blue,
+          textAlign: "center",
+          fontSize: "20px",
+          fontWeight: "600",
+          marginBottom: "8px",
+        }}
+      >
+        Opti Vía
+      </p>
+
+      <p
+        style={{
+          color: commonStyles.blue,
+          textAlign: "center",
+          fontSize: commonStyles.text_font_size,
+          opacity: 0.7,
+          marginBottom: "40px",
+        }}
+      >
+        Transporte público en tiempo real
+      </p>
+
+      {/* Buttons */}
+      <div
+        style={{
+          width: "80%",
+          display: "flex",
+          flexDirection: "column",
+          gap: "12px",
+        }}
+      >
+        <button
+          onClick={() => setView("login")}
+          style={{
+            backgroundColor: commonStyles.blue,
+            border: "none",
+            width: "100%",
+            borderRadius: "20px",
+            padding: "14px",
+            color: "white",
+            fontSize: commonStyles.button_fontSize,
+            fontWeight: commonStyles.button_fontWeight,
+            cursor: "pointer",
+          }}
+        >
+          Iniciar sesión
+        </button>
+
+        <button
+          onClick={() => setView("signup")}
+          style={{
+            backgroundColor: "transparent",
+            border: `2px solid ${commonStyles.green}`,
+            width: "100%",  
+            borderRadius: "20px",
+            padding: "14px",
+            color: commonStyles.blue,
+            fontSize: commonStyles.button_fontSize,
+            fontWeight: commonStyles.button_fontWeight,
+            cursor: "pointer",
+          }}
+        >
+          Crear cuenta
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default Auth;
+=== ./src/pages/schedule/Schedule.tsx ===
+import { ListGroup } from "react-bootstrap";
+
+export default function Schedule() {
+  // Solo horarios principales - menos cantidad
+  const departureTimes = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"];
+  
+  const getArrivalTime = (departure: string) => {
+    const [hour, minute] = departure.split(':').map(Number);
+    let arrivalMinute = minute + 25;
+    let arrivalHour = hour;
+    if (arrivalMinute >= 60) {
+      arrivalMinute -= 60;
+      arrivalHour += 1;
+    }
+    return `${arrivalHour.toString().padStart(2, '0')}:${arrivalMinute.toString().padStart(2, '0')}`;
+  };
+
+  // Simular algunos retrasos aleatorios para el demo
+  const isDelayed = (time: string) => {
+    // Solo para demostración - algunos horarios aparecen con retraso
+    return time === "08:00" || time === "14:00" || time === "18:00";
+  };
+
+  return (
+    <div style={{ padding: "16px" }}>
+      <h5 style={{ color: "#0162BF", marginBottom: "16px", fontSize: "16px" }}>
+        San Isidro → La Mella
+      </h5>
+      
+      <ListGroup style={{ borderRadius: "12px", overflow: "hidden" }}>
+        {departureTimes.map((time, index) => {
+          const delayed = isDelayed(time);
+          return (
+            <ListGroup.Item 
+              key={index}
+              className="d-flex align-items-center"
+              style={{ 
+                borderLeft: "none", 
+                borderRight: "none",
+                borderTop: index === 0 ? "none" : "1px solid #EEE",
+                borderBottom: index === departureTimes.length - 1 ? "none" : "1px solid #EEE",
+                backgroundColor: "#FFFFFF",
+                padding: "12px 16px"
+              }}
+            >
+              {/* Barra indicadora */}
+              <div style={{ 
+                width: "4px", 
+                height: "30px", 
+                backgroundColor: delayed ? "#FF6B8A" : "#6CC24A",
+                borderRadius: "4px",
+                marginRight: "12px"
+              }} />
+              
+              {/* Hora de salida */}
+              <div style={{ width: "70px" }}>
+                <span style={{ 
+                  color: delayed ? "#FF6B8A" : "#0162BF",
+                  fontWeight: 600,
+                  fontSize: "16px"
+                }}>
+                  {time}
+                </span>
+                {delayed && (
+                  <span style={{ 
+                    fontSize: "14px", 
+                    color: "#FF6B8A", 
+                    marginLeft: "4px" 
+                  }}>
+                    +5
+                  </span>
+                )}
+              </div>
+              
+              {/* Flecha */}
+              <span style={{ color: "#CCC", margin: "0 12px" }}>→</span>
+              
+              {/* Hora de llegada */}
+              <div style={{ flex: 1 }}>
+                <span style={{ 
+                  color: delayed ? "#FF6B8A" : "#0162BF",
+                  fontSize: "16px"
+                }}>
+                  {getArrivalTime(time)}
+                </span>
+                <span style={{ 
+                  color: "#999", 
+                  fontSize: "14px", 
+                  marginLeft: "8px" 
+                }}>
+                  llegada
+                </span>
+              </div>            
+            </ListGroup.Item>
+          );
+        })}
+      </ListGroup>
+    </div>
+  );
+}
+=== ./src/pages/manager/Manager.tsx ===
+import React, { useState } from "react";
+
+const commonStyles = {
+  text_font_size: "16px",
+  text_font_weight: "400",
+  button_fontSize: "14px",
+  button_fontWeight: "500",
+  green: "#6CC24A",
+  blue: "#0367C7",
+  white: "#ffffff",
+};
+
+type SubMenuItem = {
+  label: string;
+  onClick?: () => void;
+};
+
+type MenuItem = {
+  icon: string;
+  label: string;
+  subItems?: SubMenuItem[];
+  isProfile?: boolean;
+};
+
+export default function Management() {
+  const [activeMenu, setActiveMenu] = useState<number | null>(null);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+
+  const menuItems: MenuItem[] = [
+    {
+      icon: "📊",
+      label: "Vista General",
+      subItems: [
+        { label: "Vista general del día" },
+        { label: "Métricas en tiempo real" },
+        { label: "Alertas y notificaciones" },
+        { label: "Acceso rápido a acciones frecuentes" },
+      ],
+    },
+    {
+      icon: "🔧",
+      label: "Mantenimiento",
+      subItems: [
+        { label: "Buses" },
+        { label: "Conductores" },
+        { label: "Rutas" },
+        { label: "Asignaciones" },
+        { label: "Horarios" },
+        { label: "Tarifas" },
+      ],
+    },
+    {
+      icon: "⚙️",
+      label: "Operaciones",
+      subItems: [
+        { label: "Viajes en curso" },
+        { label: "Incidentes reportados" },
+        { label: "Quejas/Sugerencias" },
+        { label: "Mantenimiento de buses" },
+        { label: "Desvíos temporales" },
+      ],
+    },
+    {
+      icon: "📋",
+      label: "Consultas",
+      subItems: [
+        { label: "Usuarios" },
+        { label: "Wallets" },
+        { label: "Métodos de pago" },
+        { label: "Descuentos aplicados" },
+        { label: "Transacciones" },
+      ],
+    },
+    {
+      icon: "📈",
+      label: "Reportes",
+      subItems: [
+        { label: "Reportes diarios" },
+        { label: "Desempeño de conductores" },
+        { label: "Análisis de pasajeros" },
+        { label: "Ingresos por método de pago" },
+        { label: "Métricas de eficiencia" },
+        { label: "Reportes de efectivo" },
+      ],
+    },
+    {
+      icon: "🔐",
+      label: "Administración",
+      subItems: [
+        { label: "Administradores" },
+        { label: "Auditoría" },
+        { label: "Notificaciones masivas" },
+        { label: "Alertas de emergencia" },
+        { label: "Anuncios en la app" },
+      ],
+    },
+    {
+      icon: "⚙️",
+      label: "Configuración",
+      subItems: [
+        { label: "Ajustes del sistema" },
+        { label: "Preferencias personales" },
+        { label: "Cambiar contraseña" },
+        { label: "Notificaciones del usuario" },
+      ],
+    },
+  ];
+
+  const profileMenuItems: SubMenuItem[] = [
+    { label: "Mi perfil" },
+    { label: "Preferencias" },
+    { label: "Cambiar contraseña" },
+    { label: "Ayuda/Soporte" },
+    { label: "Cerrar sesión" },
+  ];
+
+  const handleMainButtonClick = (index: number) => {
+    setActiveMenu(activeMenu === index ? null : index);
+    setShowProfileDropdown(false);
+  };
+
+  const handleSubItemClick = (mainLabel: string, subLabel: string) => {
+    console.log(`Navigating to: ${mainLabel} > ${subLabel}`);
+    setActiveMenu(null);
+    setShowProfileDropdown(false);
+  };
+
+  const handleProfileClick = () => {
+    setShowProfileDropdown(!showProfileDropdown);
+    setActiveMenu(null);
+  };
+
+  return (
+    <div style={{ fontFamily: "Arial, sans-serif" }}>
+      {/* TOP BAR */}
+      <header
+        style={{
+          height: "70px",
+          background: commonStyles.blue,
+          color: commonStyles.white,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "0 30px",
+        }}
+      >
+        {/* <h2 style={{ margin: 0 }}>Bus Management System</h2> */}
+      <img 
+        src="/opti-via/img/logo_no_back.png" 
+        alt="Opti Via" 
+        style={{ 
+          height: "100px", 
+          width: "auto",
+          display: "block",
+        }} 
+      />
+        {/* PROFILE SECTION */}
+        <div style={{ position: "relative" }}>
+          <button
+            onClick={handleProfileClick}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              padding: "8px 16px",
+              background: "rgba(255,255,255,0.1)",
+              border: "1px solid rgba(255,255,255,0.2)",
+              borderRadius: "8px",
+              color: commonStyles.white,
+              cursor: "pointer",
+              fontSize: "14px",
+              transition: "background 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.2)";
+            }}
+            onMouseLeave={(e) => {
+              if (!showProfileDropdown) {
+                e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+              }
+            }}
+          >
+            <span style={{ 
+              fontSize: "20px",
+              backgroundColor:"white",
+              borderRadius:"50%",
+              }}>👤</span>
+            <span>Admin</span>
+            <span
+              style={{
+                fontSize: "10px",
+                transform: showProfileDropdown
+                  ? "rotate(180deg)"
+                  : "rotate(0deg)",
+                transition: "transform 0.3s ease",
+              }}
+            >
+              ▼
+            </span>
+          </button>
+
+          {/* PROFILE DROPDOWN */}
+          {showProfileDropdown && (
+            <>
+              <div
+                onClick={() => setShowProfileDropdown(false)}
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  zIndex: 9998,
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  right: 0,
+                  marginTop: "8px",
+                  background: commonStyles.white,
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                  minWidth: "200px",
+                  zIndex: 9999,
+                }}
+              >
+                {profileMenuItems.map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() =>
+                      handleSubItemClick("Perfil", item.label)
+                    }
+                    style={{
+                      display: "block",
+                      width: "100%",
+                      padding: "12px 20px",
+                      border: "none",
+                      background: "transparent",
+                      color: item.label === "Cerrar sesión" ? "#d32f2f" : "#333",
+                      cursor: "pointer",
+                      textAlign: "left",
+                      fontSize: "14px",
+                      borderBottom:
+                        index < profileMenuItems.length - 1
+                          ? "1px solid #f0f0f0"
+                          : "none",
+                      borderRadius:
+                        index === 0
+                          ? "8px 8px 0 0"
+                          : index === profileMenuItems.length - 1
+                          ? "0 0 8px 8px"
+                          : "0",
+                      transition: "all 0.15s ease",
+                      fontWeight:
+                        item.label === "Cerrar sesión" ? "600" : "400",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background =
+                        item.label === "Cerrar sesión"
+                          ? "#fff5f5"
+                          : "#f0f7ff";
+                      e.currentTarget.style.color =
+                        item.label === "Cerrar sesión"
+                          ? "#d32f2f"
+                          : commonStyles.blue;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "transparent";
+                      e.currentTarget.style.color =
+                        item.label === "Cerrar sesión" ? "#d32f2f" : "#333";
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </header>
+
+      {/* NAVIGATION BAR */}
+      <div style={{ background: commonStyles.white }}>
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            padding: "0 10px",
+            borderBottom: "2px solid #e0e0e0",
+          }}
+        >
+          {menuItems.map((item, index) => (
+            <div
+              key={index}
+              style={{
+                position: "relative",
+              }}
+            >
+              {/* MAIN BUTTON */}
+              <button
+                onClick={() => handleMainButtonClick(index)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "15px 16px",
+                  border: "none",
+                  background:
+                    activeMenu === index ? commonStyles.green : "transparent",
+                  color: activeMenu === index ? commonStyles.white : "#333",
+                  cursor: "pointer",
+                  fontSize: commonStyles.button_fontSize,
+                  fontWeight: commonStyles.button_fontWeight,
+                  whiteSpace: "nowrap",
+                  transition: "all 0.2s ease",
+                  borderBottom:
+                    activeMenu === index
+                      ? `3px solid ${commonStyles.green}`
+                      : "3px solid transparent",
+                }}
+                onMouseEnter={(e) => {
+                  if (activeMenu !== index) {
+                    e.currentTarget.style.background = "#f5f5f5";
+                    e.currentTarget.style.color = commonStyles.blue;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeMenu !== index) {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = "#333";
+                  }
+                }}
+              >
+                <span style={{ fontSize: "18px" }}>{item.icon}</span>
+                <span>{item.label}</span>
+                {item.subItems && (
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      transform:
+                        activeMenu === index
+                          ? "rotate(180deg)"
+                          : "rotate(0deg)",
+                      transition: "transform 0.3s ease",
+                    }}
+                  >
+                    ▼
+                  </span>
+                )}
+              </button>
+
+              {/* DROPDOWN MENU */}
+              {activeMenu === index && item.subItems && (
+                <>
+                  <div
+                    onClick={() => setActiveMenu(null)}
+                    style={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      zIndex: 9998,
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      left: 0,
+                      background: commonStyles.white,
+                      border: "1px solid #ddd",
+                      borderRadius: "0 0 8px 8px",
+                      boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                      minWidth: "280px",
+                      zIndex: 9999,
+                    }}
+                  >
+                    {item.subItems.map((subItem, subIndex) => (
+                      <button
+                        key={subIndex}
+                        onClick={() =>
+                          handleSubItemClick(item.label, subItem.label)
+                        }
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          padding: "12px 20px",
+                          border: "none",
+                          background: "transparent",
+                          color: "#333",
+                          cursor: "pointer",
+                          textAlign: "left",
+                          fontSize: "14px",
+                          borderBottom:
+                            subIndex < item.subItems!.length - 1
+                              ? "1px solid #f0f0f0"
+                              : "none",
+                          borderRadius:
+                            subIndex === 0
+                              ? "0"
+                              : subIndex === item.subItems!.length - 1
+                              ? "0 0 8px 8px"
+                              : "0",
+                          transition: "all 0.15s ease",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = "#f0f7ff";
+                          e.currentTarget.style.color = commonStyles.blue;
+                          e.currentTarget.style.paddingLeft = "25px";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = "transparent";
+                          e.currentTarget.style.color = "#333";
+                          e.currentTarget.style.paddingLeft = "20px";
+                        }}
+                      >
+                        {subItem.label}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* EMPTY CONTENT AREA */}
+      <div
+        style={{
+          minHeight: "calc(100vh - 120px)",
+          background: "#f4f6f8",
+          padding: "30px",
+        }}
+      >
+        <p style={{ color: "#999", textAlign: "center", marginTop: "100px" }}>
+          Select a menu item to get started
+        </p>
+      </div>
+    </div>
+  );
+}
+=== ./src/pages/report/Report.tsx ===
+import { useState, useEffect } from "react";
+import { commonStyles } from "../../components/theme/default";
+import { useView } from "../../context/ViewContext";
+import Home from "../home/Home";
+
+const reportTypes = [
+  { value: "fear", label: "Miedo / Inseguridad" },
+  { value: "reckless_driving", label: "Conducción temeraria" },
+  { value: "harassment", label: "Acoso / Intimidación" },
+  { value: "theft", label: "Robo / Asalto" },
+  { value: "unsafe_conditions", label: "Condiciones inseguras" },
+  { value: "overcrowding", label: "Aglomeración excesiva" },
+  { value: "technical_malfunction", label: "Falla técnica / Mecánica" },
+  { value: "other", label: "Otro" },
+];
+
+const referenceTypes = [
+  { value: "bus", label: "Autobús" },
+  { value: "trip", label: "Viaje" },
+  { value: "route", label: "Ruta" },
+  { value: "station", label: "Estación" },
+  { value: "driver", label: "Conductor" },
+  { value: "passenger", label: "Pasajero" },
+  { value: "other", label: "Otro" },
+];
+
+function Report() {
+  const { setCurrentView } = useView();
+  const [reportType, setReportType] = useState("");
+  const [showReportTypeDropdown, setShowReportTypeDropdown] = useState(false);
+  const [referenceType, setReferenceType] = useState("");
+  const [showReferenceTypeDropdown, setShowReferenceTypeDropdown] = useState(false);
+  const [referenceId, setReferenceId] = useState("");
+  const [description, setDescription] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [sent, setSent] = useState(false);
+
+  const handleSend = () => {
+    if (!reportType) return;
+    
+    const newReport = {
+      id: `rpt_${Date.now()}`,
+      user_id: "usr_1a2b3c4d", // Replace with actual user ID
+      report_type: reportType,
+      description: description,
+      latitude: latitude ? parseFloat(latitude) : undefined,
+      longitude: longitude ? parseFloat(longitude) : undefined,
+      reference_id: referenceId || undefined,
+      reference_type: referenceType || undefined,
+      metadata: {
+        report_type_label: reportTypes.find(t => t.value === reportType)?.label,
+        reference_type_label: referenceTypes.find(t => t.value === referenceType)?.label,
+      },
+      reviewed_by: null,
+      reviewed_at: null,
+      status: "pending",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+    
+    setSent(true);
+    console.log("Report submitted:", newReport);
+    // API call here later
+  };
+
+  // Auto-redirect to Home after 1.5 seconds
+  useEffect(() => {
+    if (sent) {
+      const timer = setTimeout(() => {
+        setCurrentView(<Home />);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [sent, setCurrentView]);
+
+  const inputStyle: React.CSSProperties = {
+    borderRadius: "20px",
+    padding: "12px 16px",
+    border: `2px solid ${commonStyles.green}`,
+    backgroundColor: "#FFFFFF",
+    color: commonStyles.blue,
+    width: "100%",
+    outline: "none",
+    fontSize: commonStyles.text_font_size,
+    boxSizing: "border-box",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: "13px",
+    fontWeight: "600",
+    color: commonStyles.blue,
+    marginBottom: "6px",
+    opacity: 0.7,
+  };
+
+  // If sent, show confirmation only
+  if (sent) {
+    return (
+      <div
+        style={{
+          padding: "16px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+        }}
+      >
+        <div
+          style={{
+            width: "80px",
+            height: "80px",
+            borderRadius: "50%",
+            backgroundColor: commonStyles.green,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginBottom: "20px",
+            fontSize: "40px",
+            color: "white",
+          }}
+        >
+          ✓
+        </div>
+        <p
+          style={{
+            color: commonStyles.green,
+            fontSize: commonStyles.button_fontSize,
+            fontWeight: commonStyles.button_fontWeight,
+            textAlign: "center",
+          }}
+        >
+          Reporte enviado
+        </p>
+        <p
+          style={{
+            color: commonStyles.blue,
+            fontSize: commonStyles.text_font_size,
+            textAlign: "center",
+            opacity: 0.7,
+          }}
+        >
+          Regresando al menú...
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        padding: "16px",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <p
+        style={{
+          marginTop: "16px",
+          color: commonStyles.blue,
+          textAlign: "center",
+          fontSize: commonStyles.text_font_size,
+        }}
+      >
+        Reportar un incidente o situación
+      </p>
+
+      <div
+        style={{
+          width: "80%",
+          display: "flex",
+          flexDirection: "column",
+          gap: "16px",
+          marginTop: "8px",
+        }}
+      >
+        {/* Report Type Dropdown */}
+        <div>
+          <div style={labelStyle}>Tipo de Reporte</div>
+          <div style={{ position: "relative" }}>
+            <div
+              onClick={() => setShowReportTypeDropdown(!showReportTypeDropdown)}
+              style={{
+                ...inputStyle,
+                cursor: "pointer",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <span style={{ opacity: reportType ? 1 : 0.5 }}>
+                {reportTypes.find(t => t.value === reportType)?.label || "Seleccionar tipo de reporte"}
+              </span>
+              <span style={{ color: commonStyles.green }}>▼</span>
+            </div>
+
+            {showReportTypeDropdown && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  right: 0,
+                  backgroundColor: "white",
+                  border: "1px solid #E0E0E0",
+                  borderRadius: "12px",
+                  marginTop: "4px",
+                  zIndex: 1000,
+                  maxHeight: "200px",
+                  overflowY: "auto",
+                }}
+              >
+                {reportTypes.map((type) => (
+                  <div
+                    key={type.value}
+                    onClick={() => {
+                      setReportType(type.value);
+                      setShowReportTypeDropdown(false);
+                    }}
+                    style={{
+                      padding: "12px 16px",
+                      cursor: "pointer",
+                      borderBottom: "1px solid #f0f0f0",
+                      color: commonStyles.blue,
+                      backgroundColor:
+                        reportType === type.value ? "rgba(108, 194, 74, 0.1)" : "white",
+                    }}
+                  >
+                    {type.label}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Reference Type Dropdown */}
+        <div>
+          <div style={labelStyle}>Tipo de Referencia (Opcional)</div>
+          <div style={{ position: "relative" }}>
+            <div
+              onClick={() => setShowReferenceTypeDropdown(!showReferenceTypeDropdown)}
+              style={{
+                ...inputStyle,
+                cursor: "pointer",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <span style={{ opacity: referenceType ? 1 : 0.5 }}>
+                {referenceTypes.find(t => t.value === referenceType)?.label || "Seleccionar tipo de referencia"}
+              </span>
+              <span style={{ color: commonStyles.green }}>▼</span>
+            </div>
+
+            {showReferenceTypeDropdown && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  right: 0,
+                  backgroundColor: "white",
+                  border: "1px solid #E0E0E0",
+                  borderRadius: "12px",
+                  marginTop: "4px",
+                  zIndex: 1000,
+                  maxHeight: "200px",
+                  overflowY: "auto",
+                }}
+              >
+                {referenceTypes.map((type) => (
+                  <div
+                    key={type.value}
+                    onClick={() => {
+                      setReferenceType(type.value);
+                      setShowReferenceTypeDropdown(false);
+                    }}
+                    style={{
+                      padding: "12px 16px",
+                      cursor: "pointer",
+                      borderBottom: "1px solid #f0f0f0",
+                      color: commonStyles.blue,
+                      backgroundColor:
+                        referenceType === type.value ? "rgba(108, 194, 74, 0.1)" : "white",
+                    }}
+                  >
+                    {type.label}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Reference ID Input */}
+        <div>
+          <div style={labelStyle}>ID de Referencia (Opcional)</div>
+          <input
+            type="text"
+            placeholder="Número de autobús, ruta, etc."
+            value={referenceId}
+            onChange={(e) => setReferenceId(e.target.value)}
+            style={inputStyle}
+          />
+        </div>
+
+        {/* Location Fields */}
+        <div style={{ display: "none", gap: "12px" }}>
+          <div style={{ flex: 1 }}>
+            <div style={labelStyle}>Latitud (Opcional)</div>
+            <input
+              type="text"
+              placeholder="Ej: 18.4861"
+              value={latitude}
+              onChange={(e) => setLatitude(e.target.value)}
+              style={inputStyle}
+            />
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={labelStyle}>Longitud (Opcional)</div>
+            <input
+              type="text"
+              placeholder="Ej: -69.9312"
+              value={longitude}
+              onChange={(e) => setLongitude(e.target.value)}
+              style={inputStyle}
+            />
+          </div>
+        </div>
+
+        {/* Description Textarea */}
+        <div>
+          <div style={labelStyle}>Descripción</div>
+          <textarea
+            placeholder="Describe lo sucedido..."
+            rows={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            style={{
+              ...inputStyle,
+              resize: "vertical",
+              minHeight: "100px",
+              fontFamily: "inherit",
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Buttons */}
+      <div
+        style={{
+          width: "80%",
+          display: "flex",
+          gap: "12px",
+          marginTop: "24px",
+        }}
+      >
+        {/* Back Button */}
+        <button
+          onClick={() => setCurrentView(<Home />)}
+          style={{
+            flex: 1,
+            backgroundColor: "transparent",
+            border: `2px solid ${commonStyles.blue}`,
+            borderRadius: "20px",
+            padding: "12px",
+            color: commonStyles.blue,
+            fontSize: commonStyles.button_fontSize,
+            fontWeight: commonStyles.button_fontWeight,
+            cursor: "pointer",
+          }}
+        >
+          ← Volver
+        </button>
+
+        {/* Send Button */}
+        <button
+          onClick={handleSend}
+          disabled={!reportType}
+          style={{
+            flex: 1,
+            backgroundColor: reportType ? commonStyles.blue : "#CCCCCC",
+            border: "none",
+            borderRadius: "20px",
+            padding: "12px",
+            color: "white",
+            fontSize: commonStyles.button_fontSize,
+            fontWeight: commonStyles.button_fontWeight,
+            cursor: reportType ? "pointer" : "not-allowed",
+          }}
+        >
+          Enviar
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default Report;
+=== ./src/pages/map/OpenMap.tsx ===
+import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
+import { useState, useEffect } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+// import juan_bush_route from "./juan_bosh_route"
+import Schedule from '../schedule/Schedule';
+import { useView } from '../../context/ViewContext';
+import juan_bush_route from './juan_bosh_route';
+import densifyRoute from "./juan_bosh_route";
+
+
+// Fix default marker icons in React
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+});
+
+
+  const busIcon = new L.Icon({
+  iconUrl: '/img/bus.png',
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+  popupAnchor: [0, -16]
+});
+
+
+export default function MapView() {
+  // Coordinates for the two stations (approximate - you can adjust)
+  const sanIsidro: [number, number] = [18.495602, -69.750599]; // Autopista San Isidro
+  const laMella: [number, number] = [18.500157, -69.852764];   // Carretera Mella
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  const {setCurrentView} = useView(); 
+
+
+// Add all your route points here - easy!
+
+/*
+useEffect(() => {
+  let watchId: number;
+
+  if ('geolocation' in navigator) {
+    // 1. Configure for maximum accuracy
+    const options = {
+      enableHighAccuracy: true,  // Forces the device to try to get a GPS fix
+      timeout: 25000,            // Wait up to 10 seconds for a good signal
+      maximumAge: 0              // Never use a cached location
+    };
+
+    // 2. Success handler
+    const onSuccess = (position: GeolocationPosition) => {
+      setUserLocation([position.coords.latitude, position.coords.longitude]);
+      console.log(`📍 Accuracy: ${position.coords.accuracy} meters`);
+    };
+
+    // 3. Error handler
+    const onError = (error: GeolocationPositionError) => {
+      console.warn(`Location error (${error.code}): ${error.message}`);
+      // Fallback to a sensible default for the demo if all else fails
+      if (!userLocation) {
+        //  setUserLocation([18.4693, -69.8894]); // San Isidro
+        alert("La ubicacion no pudo ser capturada con presicion.");
+      }
+    };
+
+    // 4. Start watching the position (this is the key change)
+    watchId = navigator.geolocation.watchPosition(onSuccess, onError, options);
+  }
+
+  // 5. Cleanup: stop watching when the component unmounts
+  return () => {
+    if (watchId) {
+      navigator.geolocation.clearWatch(watchId);
+    }
+  };
+}, []); // The empty dependency array ensures this runs only once
+*/
+const routePoints: [number, number][] = densifyRoute(); //juan_bush_route(); 
+  
+// Get user's current location
+  
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation([position.coords.latitude, position.coords.longitude]);
+        },
+        (error) => {
+          console.log('Geolocation error:', error);
+        }
+      );
+    }
+  }, []);
+
+  // Center between the two stations
+  const center: [number, number] = [
+    (sanIsidro[0] + laMella[0]) / 2,
+    (sanIsidro[1] + laMella[1]) / 2,
+  ];
+
+  const busIcon = new L.Icon({
+  iconUrl: '/opti-via/img/bus.png',
+  iconSize: [32, 32],
+  iconAnchor: [16, 16],
+  popupAnchor: [0, -16]
+});
+
+//   const percentToPx = (percent: number) => {
+//   const vh = window.innerHeight;
+//   return Math.max((percent / 100) * vh, 400);
+// };
+const [busIndex, setBusIndex] = useState(0);
+
+// Add this effect
+useEffect(() => {
+  const timer = setInterval(() => {
+    setBusIndex(prev => (prev + 1) % routePoints.length);
+  }, 500); // Move every 500ms
+  return () => clearInterval(timer);
+}, []);
+  return (
+    <div 
+      data-component="map-container"
+      style={{ 
+        flex: 1,                    // Takes all available space in Body
+        width: '100%', 
+        overflow: 'hidden',
+        position: 'relative',
+        display: 'flex',            // Makes MapContainer fill the space
+        flexDirection: 'column'     // Stack children vertically
+      // paddingTop:'40%',
+      // height: percentToPx(100), 
+      // width: '100%', 
+      // overflow: 'hidden',      // This is key - prevents map from spilling out
+      // position: 'relative'      // Establishes containment context
+    }}>
+      <MapContainer 
+        center={center} 
+        zoom={11} 
+        style={{ 
+          flex: 1,                // Fills the parent div
+          width: '100%',
+          borderRadius: '12px',
+          border: '5px solid white'
+        
+        
+          // height: '100%', 
+          // width: '100%',
+          // borderRadius: '12px' ,
+          // border: '5px solid red'
+        }}
+      >
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        />
+        <Marker position={routePoints[busIndex]} icon={busIcon}>
+          <Popup>🚌</Popup>
+        </Marker>
+        {/* Origin Marker */}
+        <Marker position={sanIsidro}
+        eventHandlers={{
+            click:()=>{
+                setCurrentView(<Schedule/>)
+            }
+        }}
+        >
+          <Popup>San Isidro</Popup>
+        </Marker>
+        
+        // Use it:
+        <Marker position={routePoints[routePoints.length-2]} icon={busIcon}>
+            <Popup>OMZA Bus</Popup>
+        </Marker>
+        {/* Destination Marker */}
+        <Marker position={laMella}
+               eventHandlers={{
+            click:()=>{
+                setCurrentView(<Schedule/>)
+            }
+        }}
+        >
+          <Popup>Carretera Mella</Popup>
+        </Marker>
+        
+        {/* User Location (red dot) */}
+        {userLocation && (
+          <Marker 
+            position={userLocation}
+            icon={new L.Icon({
+              iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+              shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+              iconSize: [25, 41],
+              iconAnchor: [12, 41],
+              popupAnchor: [1, -34],
+              shadowSize: [41, 41]
+            })}
+          >
+            <Popup>Tu ubicación</Popup>
+          </Marker>
+        )}
+        
+        {/* Route line between stations */}
+        <Polyline 
+          positions={routePoints /*[sanIsidro, laMella]*/} 
+          color="#0367C7" 
+          weight={5}
+          opacity={0.7}
+        />
+      </MapContainer>
+    </div>
+  );
+}
+=== ./src/pages/map/Map.tsx ===
+import OpenMap from "./OpenMap"
+
+
+export default function Map(){
+    return (
+        <>
+            <OpenMap/>
+        </>
+    )
+}
+=== ./src/pages/history/History.tsx ===
+import { commonStyles } from "../../components/theme/default";
+
+// Mock data — replace with actual API/state data later
+const mockHistory = [
+  {
+    id: "trx_001",
+    route_name: "La Mella → San Isidro",
+    driver_name: "Carlos",
+    amount: 35,
+    payment_method: "Tarjeta",
+    type: "viaje",
+    status: "completado",
+    created_at: "2026-07-08 14:30",
+    start_point: "La Mella",
+    end_point: "San Isidro",
+  },
+  {
+    id: "trx_002",
+    route_name: "San Isidro → La Mella",
+    driver_name: "Miguel",
+    amount: 35,
+    payment_method: "Efectivo",
+    type: "viaje",
+    status: "completado",
+    created_at: "2026-07-07 09:15",
+    start_point: "San Isidro",
+    end_point: "La Mella",
+  },
+ 
+];
+
+function History() {
+  return (
+    <div style={{ padding: "20px", color: commonStyles.blue }}>
+      {/* Header */}
+      <h3
+        style={{
+          fontSize: commonStyles.button_fontSize,
+          fontWeight: commonStyles.button_fontWeight,
+        }}
+      >
+        Historial
+      </h3>
+      <p
+        style={{
+          fontSize: commonStyles.text_font_size,
+          fontWeight: commonStyles.text_font_weight,
+          marginBottom: "20px",
+          opacity: 0.7,
+        }}
+      >
+        Transacciones y viajes realizados
+      </p>
+
+      {/* History List */}
+      {mockHistory.map((item) => (
+        <div
+          key={item.id}
+          style={{
+            backgroundColor: "rgba(255, 255, 255, 0.08)",
+            borderRadius: "12px",
+            padding: "16px",
+            marginBottom: "12px",
+          }}
+        >
+          {/* Top Row: Route + Status */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "10px",
+            }}
+          >
+            <span style={{ fontSize: "16px", fontWeight: "600" }}>
+              {item.route_name}
+            </span>
+            <span
+              style={{
+                fontSize: "12px",
+                padding: "4px 10px",
+                borderRadius: "20px",
+                backgroundColor:
+                  item.status === "completado"
+                    ? "rgba(0, 200, 100, 0.2)"
+                    : "rgba(255, 80, 80, 0.2)",
+                color:
+                  item.status === "completado" ? "#00c864" : "#ff5050",
+                fontWeight: "600",
+              }}
+            >
+              {item.status === "completado" ? "Completado" : "Cancelado"}
+            </span>
+          </div>
+
+          {/* Driver */}
+          <div
+            style={{
+              fontSize: commonStyles.text_font_size,
+              opacity: 0.7,
+              marginBottom: "4px",
+            }}
+          >
+            Conductor: {item.driver_name}
+          </div>
+
+          {/* Route Details */}
+          <div
+            style={{
+              fontSize: commonStyles.text_font_size,
+              opacity: 0.7,
+              marginBottom: "8px",
+            }}
+          >
+            {item.start_point} → {item.end_point}
+          </div>
+
+          {/* Bottom Row: Amount + Payment Method + Date */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <span
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "700",
+                  color: "#4fc3f7",
+                }}
+              >
+                ${item.amount.toFixed(2)}
+              </span>
+              <span
+                style={{
+                  fontSize: "12px",
+                  marginLeft: "8px",
+                  opacity: 0.5,
+                }}
+              >
+                {item.payment_method}
+              </span>
+            </div>
+            <span style={{ fontSize: "12px", opacity: 0.5 }}>
+              {item.created_at}
+            </span>
+          </div>
+
+          {/* Report Button */}
+          <button
+            style={{
+              width: "100%",
+              marginTop: "12px",
+              padding: "8px",
+              backgroundColor: "rgba(255, 80, 80, 0.1)",
+              color: "#ff5050",
+              border: "1px solid rgba(255, 80, 80, 0.3)",
+              borderRadius: "8px",
+              fontSize: "13px",
+              fontWeight: "600",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              // Open fear report modal/screen for this trip
+              console.log("Reportar viaje:", item.id);
+            }}
+          >
+            ⚠ Reportar incidente
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default History;
+=== ./src/pages/home/Home.tsx ===
+import { Card, Form, Image } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import { useView } from "../../context/ViewContext";
+import Searcher from "../searcher/Searcher"
+// import Report from "../report/Report";
+// import Settings from "../settings/Settings";
+// import SignUp from "../singup/Singup";
+// import Map from "../map/Map";
+
+// import History from "../history/History";
+// import Profile from "../profile/Profile";
+// import Map from "../map/Map";
+// import Menu from "../../components/menu/menu";
+// import Cards from "../cards/Cards";
+
+
+export default function Home() {
+  const textArray = [
+    "El transporte que necesitas al alcance de tu mano.",
+    "Viaja con aire, viaja cómodo, viaja con la omza.",
+    "Con múltiples funciones para hacerte la vida fácil."
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const {setCurrentView} = useView();  
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % textArray.length);
+    }, 5000);
+    setCurrentView(<Home/>);
+    return () => clearInterval(interval);
+  }, []);
+  
+  return (
+    <>
+      <div style={{ 
+        padding: "16px",
+        overflowY: "auto",        // ADDED
+        flex: 1                   // ADDED  
+      }}>
+        
+        <p style={{ marginTop: "16px", color: "#0162BF", display: "flex", alignItems: "center" }}>
+          Viaja seguro cómodo y rápido.
+        </p>
+        
+        <div style={{ position: "relative", width: "100%" }}>
+          <Form.Control 
+            type="search" 
+            placeholder="Buscar ruta" 
+            style={{ 
+              borderRadius: "20px",
+              padding: "10px 16px 10px 50px",
+              border: "2px solid #6CC24A",
+              backgroundColor: "#FFFFFF",
+              color: "#0162BF",
+              width: "100%"
+            }}
+            onClick={()=>setCurrentView(<Searcher/>)}
+          />
+          <Image 
+            src="/opti-via/img/groadmap.png" 
+            alt="Rutas"
+            height="24"
+            width="24"
+            style={{ 
+              position: "absolute",
+              left: "16px",
+              top: "50%",
+              transform: "translateY(-50%)"
+            }} 
+          />
+        </div>
+
+        <p style={{ marginTop: "16px", color: "#0162BF", textAlign: "center" }}>
+          {textArray[currentIndex]}
+        </p>
+
+        <Card style={{ marginTop: "16px", borderRadius: "12px", overflow: "hidden" }}>
+          <Card.Img 
+            variant="top" 
+            src={`/opti-via/img/carrusel/${currentIndex + 1}.png`}
+            style={{ 
+                height: "340px",
+                width: "340px",
+                objectFit: "cover" ,
+                borderRadius:"5%"
+            }}
+          />
+        </Card>
+      </div>
+    </>
+  );
+}
+=== ./src/components/container/Container.tsx ===
+import { AuthProvider } from "../../context/AuthContext";
+// import SignUp from "../../pages/singup/Singup";
+import Body from "../body/Body";
+import Footer from "../footer/Footer";
+import Header from "../header/Header";
+import { useAuth } from "../../context/AuthContext";
+// import Home from "../../pages/home/Home";
+import Auth from "../../pages/auth/Auth";
+
+function Box() {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Auth />;
+  }
+
+  return (
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      height: "100%",
+    }}>
+      <Header />
+      <Body />
+      <Footer />
+    </div>
+  );
+}
+
+function Container() {
+  return (
+    <AuthProvider>
+      <Box />
+    </AuthProvider>
+  );
+}
+
+export default Container;
+=== ./src/components/footer/Footer.tsx ===
+ import { Button,Image} from "react-bootstrap";
+ import { useView } from "../../context/ViewContext";
+ import Searcher  from "../../pages/searcher/Searcher";
+ import Map from "../../pages/map/Map"
+ import {commonStyles} from "../theme/default";
+ function Footer() {
+  const {setCurrentView} = useView();
+  return (
+    <div style={{ 
+      display: "flex",
+      flexShrink: 0,
+      width: "100%",
+      maxWidth: "480px",
+      alignSelf: "center"
+      // position: "fixed", 
+      // bottom: 0, 
+      // left: 0, 
+      // right: 0, 
+      // maxWidth: "480px",
+      // margin: "0 auto",
+      // display: "flex"
+    }}>
+      <Button 
+        style={{ 
+          backgroundColor: commonStyles.blue, 
+          border: "none",
+          borderRadius: 0,
+          flex: 1,
+          color: "white",
+          padding: "16px 0",
+          fontSize: commonStyles.button_fontSize,
+          fontWeight: commonStyles.button_fontWeight
+        }}
+        onClick={()=>setCurrentView(<Searcher/>)}
+      >
+        Rutas
+        <Image src= "/opti-via/img/wroadmap.png" 
+          alt="Rutas"
+          height="34"
+          width="34"
+          style={{marginLeft:"10px"}} 
+        />
+      </Button>
+      <Button 
+        style={{ 
+          backgroundColor: commonStyles.green, 
+          border: "none",
+          borderRadius: 0,
+          flex: 1,
+          color: "white",
+          padding: "10px 0",
+          fontSize: commonStyles.button_fontSize,
+          fontWeight: commonStyles.button_fontWeight
+        }}
+        onClick={()=>setCurrentView(<Map/>)}
+      >
+        Mapa
+        <Image src="/opti-via/img/wmap.png" 
+          alt="Mapa" 
+          height="34" 
+          width="34"
+          style={{marginLeft:"10px"}} 
+        />
+      </Button>
+    </div>
+  );
+}
+
+export default Footer;
+
+/*
+ <Row>
+        <Col xs={6} className="pe-1">
+          <Button 
+            style={{ 
+              backgroundColor: "#0367C7", 
+              border: "none",
+              width: "100%"
+            }}
+          >
+            <Image src="../../../public/img/wroadmap.png" alt="Rutas" height="20" width="20" />
+            Rutas
+          </Button>
+        </Col>
+        <Col xs={6} className="ps-1">
+          <Button 
+            style={{ 
+              backgroundColor: "#6CC24A", 
+              border: "none",
+              width: "100%"
+            }}
+          >
+            <Image src="../../../public/img/wmap.png" alt="Mapa" height="20" width="20" />
+            Mapa
+          </Button>
+        </Col>
+      </Row>
+
+*/
+=== ./src/components/body/Body.tsx ===
+// Body.tsx
+import { useView } from "../../context/ViewContext";
+import Home from "../../pages/home/Home";
+
+function Body() {
+  const { currentView } = useView();
+
+  return (
+    <div style={{
+
+      flex: 1,                    // Takes all remaining space
+      minHeight: 0,               // Critical for overflow to work
+      overflow: "hidden",         // "auto" if you need scrolling
+      display: "flex",
+      flexDirection: "column",
+  
+      
+    //  maxWidth: "480px",
+    //   margin: "0 auto",
+    //   width: "100%",
+    //   flex: 1,
+    //   minHeight: 0,
+    //   overflow: "hidden",              // Change to "auto" if you need scrolling
+    //   display: "flex",
+    //   flexDirection: "column",
+    //   position: "relative"   
+      
+      
+      /*
+      maxWidth: "480px",
+      margin: "0 auto",
+      width: "100%",
+      paddingTop:"10px",
+      height: "90vh",
+      //paddingTop:"10%",
+      // paddingBottom:"10%",
+      //height: "calc(100vh - 120px)",  // Subtract header + footer height
+      overflow: "hidden",              // Contain the map
+      display: "flex",
+      flexDirection: "column"
+      */
+      /*
+      paddingTop:"20%",
+      marginTop:"20%",
+      maxWidth: "480px",
+      margin: "0 auto",
+      width: "100%",
+      overflowY: "auto",      // Scroll only if content overflows
+      marginRight:"10%",
+      */
+      }}>
+      {currentView ?? <Home />}
+    </div>
+  );
+}
+
+export default Body; 
+=== ./src/components/menu/Menu.tsx ===
+import { useView } from "../../context/ViewContext";
+import { commonStyles } from "../theme/default";
+import Profile from "../../pages/profile/Profile";
+import Cards from "../../pages/cards/Cards";
+import History from "../../pages/history/History";
+// import Report from "../../pages/report/Report";
+import Settings from "../../pages/settings/Settings";
+import { useAuth } from "../../context/AuthContext";
+
+function Menu() {
+  const { setCurrentView } = useView();
+  const {logout} = useAuth(); 
+  
+  const menuItems = [
+    { label: "Mi Perfil", view: <Profile /> },
+    { label: "Mis Tarjetas", view: <Cards /> },
+    { label: "Historial", view: <History /> },
+    // { label: "Reportar", view: <Report /> },
+    { label: "Configuración", view: <Settings /> },
+    { label: "Cerrar Sesión", view: null }
+  ];
+
+  return (
+    <div style={{ 
+      maxWidth: "480px",
+      width: "100%",
+      flexShrink: 0,
+      display: "flex",
+      flexDirection: "column",
+      height: "99%",
+      boxSizing: "border-box",
+      backgroundColor:commonStyles.blue,
+      paddingTop:"5px",
+    }}>
+      {menuItems.map((item, index) => (
+        <div
+          key={index}
+          onClick={() => {
+              if (item.view) {
+                setCurrentView(item.view);
+              } else {
+                // console.log("not valid");
+                logout(); // your specific function
+              }
+            }}
+          style={{
+            width: "100%",
+            boxSizing: "border-box",
+            fontSize: commonStyles.button_fontSize,
+            fontWeight: commonStyles.button_fontWeight,
+            color: "white",
+            // paddingTop:
+            padding: "20px",
+            // borderBottom: "1px solid rgba(255,255,255,0.1)",
+            cursor: "pointer",
+            backgroundColor: commonStyles.blue,
+            border:"1px solid white",
+          }}
+        >
+          {item.label}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default Menu;
+=== ./src/components/header/Header.tsx ===
+  import { Image } from "react-bootstrap";
+  import { useState, type ReactNode } from "react";
+  import { useView } from "../../context/ViewContext";
+  import Alerts from "../../pages/alerts/Alerts"  
+  // import Home from "../../pages/home/Home";
+import { commonStyles } from "../theme/default";
+import Menu from "../menu/Menu";
+import Home from "../../pages/home/Home";
+    function Header() {
+        const [prev_view, setPrevView] = useState<ReactNode>(<Home/>);
+        const [notification,setNotification] = useState(false);
+     
+        const [is_menu_open, setMenu] = useState(false);
+        const { currentView,setCurrentView} = useView();
+   
+    return (
+      <>
+         <div style={{ 
+   maxWidth: "480px",
+  width: "100%",
+  flexShrink: 0,
+  backgroundColor: commonStyles.blue,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+  height: "50px",
+  padding: "0 10px",
+  boxSizing: "border-box"
+    }}>
+
+         <Image
+            src={`/opti-via/img/${is_menu_open?"menu.png":"wmenu.png"}`} 
+ 
+            // src={`/img/${notification==false?"wbell.png":"wbell_active.png"}`} 
+            alt="Notifications" 
+            style={{ 
+              // default
+              height: "38px",
+              width: "38px",
+
+              /*
+              // condition based 
+              height: "30px",
+              width: "30px",
+              cursor: "pointer",
+              padding:"2px",
+              border: "1px solid white"  
+              */
+              padding:"1px",
+
+              border: "1px solid white"  
+
+              
+              // position: "absolute",
+              // top: "40%",
+              // right: "2px",
+              // transform: "translateY(-50%)",
+              // height: "38px",
+              // width: "38px",            
+              // borderRad  ius: "25%",
+              // backgroundColor: "black"
+            }}
+            onClick={() => {
+              // if currentView.type == 
+              if (!is_menu_open){
+                setPrevView(currentView);
+                setCurrentView(<Menu />);
+              }
+              if (is_menu_open){
+                setCurrentView(prev_view);
+              }
+              setMenu(is_menu_open?false:true);
+            }}
+            // onDoubleClick={()=>{setNotification(notification?false:true)}}
+          />
+          
+      <Image
+        src={`/opti-via/img/${notification ? "wbell_active.png" : "wbell.png"}`}
+        alt="Notifications"
+        style={{ 
+          height: "32px",
+          width: "32px",
+          cursor: "pointer"
+        }}
+        onClick={() => {
+           
+              if (!notification){
+                setPrevView(currentView);
+                setCurrentView(<Alerts />);
+              }
+              if (notification){
+                setCurrentView(prev_view);
+              }
+              setNotification(notification?false:true);
+          
+        }}
+        // onDoubleClick={() => { setNotification(!notification) }}
+      />
+      </div>  
+      </>
+    );
+  }
+  
+  export default Header;
+
+=== ./src/main.tsx ===
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App.tsx'
+// import Management from './pages/manager/Manager.tsx'
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App/>
+    {/* <Management /> */}
+  </StrictMode>,
+)
+
+=== ./src/App.tsx ===
+import Container from "./components/container/Container";
+import { ViewProvider } from "./context/ViewContext";
+
+export default function App() {
+  return (
+    <div style={{ 
+      maxWidth: "480px",
+      width: "100%",
+      margin: "0 auto",
+      height: "100dvh",//"100vh",
+      display: "flex",
+      flexDirection: "column",
+      backgroundColor: "#FFFFFF",
+      boxShadow: "0 0 20px rgba(0,0,0,0.05)",
+      overflow: "hidden",
+      // border:"solid black",
+      
+      // maxWidth: "480px",
+      // width: "100%",
+      // margin: "0 auto",
+      // minHeight: "100vh",
+      // position: "relative",
+      // backgroundColor: "#FFFFFF",
+      // boxShadow: "0 0 20px rgba(0,0,0,0.05)",
+      // border:"solid black"
+    }}>
+      <ViewProvider>
+        <Container />
+      </ViewProvider>
+    </div>
+  );
+}

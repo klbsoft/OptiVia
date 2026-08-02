@@ -7,7 +7,8 @@ import History from "../../pages/history/History";
 import Settings from "../../pages/settings/Settings";
 import { useAuth } from "../../context/AuthContext";
 
-function Menu() {
+function Menu({ onSelected }: { onSelected: () => void }) {
+
   const { setCurrentView } = useView();
   const {logout} = useAuth(); 
   
@@ -39,8 +40,10 @@ function Menu() {
               if (item.view) {
                 setCurrentView(item.view);
               } else {
+                // console.log("not valid");
                 logout(); // your specific function
               }
+              onSelected(); 
             }}
           style={{
             width: "100%",

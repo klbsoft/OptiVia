@@ -1,13 +1,24 @@
   import { Image } from "react-bootstrap";
-  import { useState } from "react";
+  import { useState, type ReactNode } from "react";
   import { useView } from "../../context/ViewContext";
   import Alerts from "../../pages/alerts/Alerts"  
   // import Home from "../../pages/home/Home";
 import { commonStyles } from "../theme/default";
 import Menu from "../menu/Menu";
-    function Header() {
-    const [notification,setNotification] = useState(true);
-    const {setCurrentView} = useView();
+import Home from "../../pages/home/Home";
+import { useFooter } from "../../context/FooterContext";
+function Header() {
+        const [prev_view, setPrevView] = useState<ReactNode>(<Home/>);
+        const [notification,setNotification] = useState(false);
+        const [back_btn_enabled,setBackBtn] = useState(false); 
+        const [notification_on_view,setNotificationView] = useState(false);
+        const [is_menu_open, setMenu] = useState(false);
+        const { currentView,setCurrentView} = useView();
+        const {setEnabled,setDefault} = useFooter();
+    function onSelected(){
+        setMenu(false); 
+        setBackBtn(true);
+    }
     return (
       <>
          <div style={{ 
@@ -24,8 +35,8 @@ import Menu from "../menu/Menu";
     }}>
 
          <Image
-            src={`/opti-via/img/${notification==false?"wmenu.png":"wmenu.png"}`} 
- 
+            src={`/opti-via/img/${is_menu_open||back_btn_enabled?"x_back.png":"wmenu.png"}`} 
+              //lime_menu.png"
             // src={`/img/${notification==false?"wbell.png":"wbell_active.png"}`} 
             alt="Notifications" 
             style={{ 
@@ -43,7 +54,7 @@ import Menu from "../menu/Menu";
               */
               padding:"1px",
 
-              border: "1px solid white"  
+              // border: "1px solid white"  
 
               
               // position: "absolute",
@@ -55,20 +66,77 @@ import Menu from "../menu/Menu";
               // borderRad  ius: "25%",
               // backgroundColor: "black"
             }}
-            onClick={() => { setCurrentView(<Menu />) }}
+            onClick={() => {
+              setDefault();
+              // if currentView.type == 
+              if (back_btn_enabled){
+                  setCurrentView(<Home/>);
+                  setEnabled(true);
+                  setBackBtn(false); 
+                  setNotificationView(false); 
+                  setMenu(false);
+               
+                return;
+              }
+              if (!is_menu_open){
+                 if (!notification_on_view)setPrevView(currentView);
+                 setEnabled(false);
+                 setCurrentView(<Menu onSelected={onSelected}  />);
+              }
+              if (is_menu_open){
+                setCurrentView(prev_view);
+                setEnabled(true);
+              }
+              setNotificationView(false);
+              setMenu(is_menu_open?false:true); 
+            }}
             // onDoubleClick={()=>{setNotification(notification?false:true)}}
           />
-          
-      <Image
-        src={`/opti-via/img/${notification ? "wbell_active.png" : "wbell.png"}`}
+        <Image
+        src={`/opti-via/img/${notification_on_view ? "white_home.png" : "white_home.png"}`}
         alt="Notifications"
         style={{ 
           height: "32px",
           width: "32px",
           cursor: "pointer"
         }}
-        onClick={() => { setCurrentView(<Alerts />) }}
-        onDoubleClick={() => { setNotification(!notification) }}
+        onClick={() => {
+          setDefault();
+          setBackBtn(false);
+          setMenu(false); 
+          setNotificationView(false); 
+          setEnabled(true); 
+          setPrevView(<Home/>)
+          setCurrentView(<Home/>);  
+        }}
+        // onDoubleClick={() => { setNotification(!notification) }}
+      />  
+      <Image
+        src={`/opti-via/img/${notification_on_view ? "wbell.png" : "wbell.png"}`}
+        alt="Notifications"
+        style={{ 
+          height: "32px",
+          width: "32px",
+          cursor: "pointer"
+        }}
+        onClick={() => {
+              setDefault();
+              if (!notification_on_view){
+                if (!is_menu_open) setPrevView(currentView);
+                setCurrentView(<Alerts />);
+              }
+              // if (notification_on_view){
+              //   setCurrentView(prev_view);
+              //   onFooterToggle(true);
+              // }
+              setMenu(false); 
+              setEnabled(false);
+              setBackBtn(true);
+              //setNotificationView(notification_on_view?false:true);
+            
+          
+        }}
+        // onDoubleClick={() => { setNotification(!notification) }}
       />
       </div>  
       </>

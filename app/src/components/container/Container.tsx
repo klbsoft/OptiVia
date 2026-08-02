@@ -6,23 +6,32 @@ import Header from "../header/Header";
 import { useAuth } from "../../context/AuthContext";
 // import Home from "../../pages/home/Home";
 import Auth from "../../pages/auth/Auth";
+// import { useState } from "react";
+import { FooterProvider } from "../../context/FooterContext";
 
 function Box() {
   const { isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
-    return <Auth />;
-  }
+ 
+ 
+  // if (!isAuthenticated) {
+  //   return <Auth />;
+  // }
 
   return (
     <div style={{
       display: "flex",
       flexDirection: "column",
-      height: "100%",
+      flex: 1,          
+      minHeight: 0, 
+      // border:'5px solid black',
+      margin:'0px',
+      padding:"0px",
     }}>
+    <FooterProvider>
       <Header />
       <Body />
       <Footer />
+    </FooterProvider>
     </div>
   );
 }

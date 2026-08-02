@@ -1,16 +1,18 @@
 import Container from "./components/container/Container";
 import { ViewProvider } from "./context/ViewContext";
+import Home from "./pages/home/Home";
 
 export default function App() {
   return (
     <div style={{ 
       maxWidth: "480px",
       width: "100%",
-      margin: "0 auto",
-      height: "100dvh",//"100vh",
+      margin: "0%",
+      padding: "0%",
+      height: "98dvh",//"100vh",
       display: "flex",
       flexDirection: "column",
-      backgroundColor: "#FFFFFF",
+      backgroundColor: "#ffffff",
       boxShadow: "0 0 20px rgba(0,0,0,0.05)",
       overflow: "hidden",
       // border:"solid black",

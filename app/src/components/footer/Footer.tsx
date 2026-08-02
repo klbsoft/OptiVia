@@ -3,11 +3,18 @@
  import Searcher  from "../../pages/searcher/Searcher";
  import Map from "../../pages/map/Map"
  import {commonStyles} from "../theme/default";
- function Footer() {
+
+import { useFooter } from "../../context/FooterContext";
+
+function Footer(){
   const {setCurrentView} = useView();
+  const { isEnabled,leftBorder,rightBorder,setLeftView,setRightView} = useFooter();
+
+ 
+ 
   return (
     <div style={{ 
-      display: "flex",
+      display: isEnabled?"flex":"none",
       flexShrink: 0,
       width: "100%",
       maxWidth: "480px",
@@ -29,9 +36,13 @@
           color: "white",
           padding: "16px 0",
           fontSize: commonStyles.button_fontSize,
-          fontWeight: commonStyles.button_fontWeight
+          fontWeight: commonStyles.button_fontWeight,
+          borderTop: `${leftBorder}`
         }}
-        onClick={()=>setCurrentView(<Searcher/>)}
+        onClick={()=>{
+          setCurrentView(<Searcher/>); 
+          setLeftView();
+        }}
       >
         Rutas
         <Image src= "/opti-via/img/wroadmap.png" 
@@ -50,9 +61,13 @@
           color: "white",
           padding: "10px 0",
           fontSize: commonStyles.button_fontSize,
-          fontWeight: commonStyles.button_fontWeight
+          fontWeight: commonStyles.button_fontWeight,
+          borderTop: `${rightBorder}`,
         }}
-        onClick={()=>setCurrentView(<Map/>)}
+        onClick={()=>{
+          setCurrentView(<Map/>);
+          setRightView(); 
+        }}
       >
         Mapa
         <Image src="/opti-via/img/wmap.png" 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { CardFormData } from "./Singup";
 import { commonStyles } from "../../components/theme/default";
-
+import "../../animation.css"
 interface CardFormProps {
   cardData: CardFormData;
   setCardData: (data: CardFormData) => void;
@@ -46,7 +46,9 @@ function CardForm({ cardData, setCardData, userName }: CardFormProps) {
 
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0" }}>
+      <div 
+          className="page-transition"
+      style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0" }}>
         <span style={{ color: commonStyles.blue, fontSize: commonStyles.text_font_size }}>
           ¿Agregar método de pago?
         </span>

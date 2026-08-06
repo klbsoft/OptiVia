@@ -6,7 +6,8 @@ use mongodb::bson::doc;
 use serde::{Deserialize, Serialize};
 
 
-use crate::identity::{Bus, Transaction, User, UserClient, Wallet};
+use crate::identity::identities::UserSettings;
+use crate::identity::{Bus, Driver, DriverAssignment, FareHistory, PassengerTrip, RouteStop, Transaction, Trip, User, UserClient, Wallet};
 
 use std::sync::OnceLock;
 
@@ -53,6 +54,33 @@ impl Mongo {
     pub fn buses(&self) -> Collection<Bus> {
         self.db.collection("buses")
     }
+    pub fn drivers(&self) -> Collection<Driver> {
+    self.db.collection("drivers")
+}
+
+pub fn trips(&self) -> Collection<Trip> {
+    self.db.collection("trips")
+}
+
+pub fn passenger_trips(&self) -> Collection<PassengerTrip> {
+    self.db.collection("passenger_trips")
+}
+
+pub fn driver_assignments(&self) -> Collection<DriverAssignment> {
+    self.db.collection("driver_assignments")
+}
+
+pub fn route_stops(&self) -> Collection<RouteStop> {
+    self.db.collection("route_stops")
+}
+
+pub fn fare_history(&self) -> Collection<FareHistory> {
+    self.db.collection("fare_history")
+}
+
+pub fn user_settings(&self) -> Collection<UserSettings> {
+    self.db.collection("user_settings")
+}
 }
 
 pub async fn init_db() {

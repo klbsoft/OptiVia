@@ -6,6 +6,7 @@ type FooterContextType = {
   leftBorder: string;
   rightBorder: string;
   isEnabled: boolean;
+  activeView: number;
   setEnabled: (enabled: boolean) => void;
   setDefault: () => void;
   setLeftView: () => void;
@@ -18,20 +19,24 @@ export function FooterProvider({ children }: { children: ReactNode }) {
   const [leftBorder, setLeft] = useState(`${size} solid ${commonStyles.blue}`);
   const [rightBorder, setRight] = useState(`${size} solid ${commonStyles.green}`);
   const [isEnabled, setEnabled] = useState(true);
+  const [activeView, setActiveView] = useState(0);
 
   const setDefault = () => {
     setLeft(`${size} solid ${commonStyles.blue}`);
     setRight(`${size} solid ${commonStyles.green}`);
+    setActiveView(0);
   };
 
   const setLeftView = () => {
     setLeft(`${size} solid ${commonStyles.blue}`);
     setRight(`${size} solid ${commonStyles.blue}`);
+    setActiveView(1);
   };
 
   const setRightView = () => {
     setLeft(`${size} solid ${commonStyles.green}`);
     setRight(`${size} solid ${commonStyles.green}`);
+    setActiveView(2);
   };
 
   return (
@@ -39,6 +44,7 @@ export function FooterProvider({ children }: { children: ReactNode }) {
       leftBorder, 
       rightBorder, 
       isEnabled, 
+      activeView,
       setEnabled, 
       setDefault, 
       setLeftView, 

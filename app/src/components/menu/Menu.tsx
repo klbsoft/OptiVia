@@ -6,6 +6,7 @@ import History from "../../pages/history/History";
 // import Report from "../../pages/report/Report";
 import Settings from "../../pages/settings/Settings";
 import { useAuth } from "../../context/AuthContext";
+import "../../animation.css"
 
 function Menu({ onSelected }: { onSelected: () => void }) {
 
@@ -22,7 +23,9 @@ function Menu({ onSelected }: { onSelected: () => void }) {
   ];
 
   return (
-    <div style={{ 
+    <div 
+     className="page-transition"
+      style={{ 
       maxWidth: "480px",
       width: "100%",
       flexShrink: 0,
@@ -42,7 +45,9 @@ function Menu({ onSelected }: { onSelected: () => void }) {
               } else {
                 // console.log("not valid");
                 logout(); // your specific function
+                window.location.reload();
               }
+              //  console.log("hit");    
               onSelected(); 
             }}
           style={{

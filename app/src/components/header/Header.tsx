@@ -7,6 +7,7 @@ import { commonStyles } from "../theme/default";
 import Menu from "../menu/Menu";
 import Home from "../../pages/home/Home";
 import { useFooter } from "../../context/FooterContext";
+import "../../animation.css"
 function Header() {
         const [prev_view, setPrevView] = useState<ReactNode>(<Home/>);
         const [notification,setNotification] = useState(false);
@@ -14,14 +15,17 @@ function Header() {
         const [notification_on_view,setNotificationView] = useState(false);
         const [is_menu_open, setMenu] = useState(false);
         const { currentView,setCurrentView} = useView();
-        const {setEnabled,setDefault} = useFooter();
+        const {setEnabled,setDefault,leftBorder,rightBorder} = useFooter();
     function onSelected(){
         setMenu(false); 
         setBackBtn(true);
     }
     return (
       <>
-         <div style={{ 
+  <div 
+  className="page-transition"
+
+  style={{ 
    maxWidth: "480px",
   width: "100%",
   flexShrink: 0,
@@ -67,6 +71,7 @@ function Header() {
               // backgroundColor: "black"
             }}
             onClick={() => {
+
               setDefault();
               // if currentView.type == 
               if (back_btn_enabled){

@@ -1,5 +1,5 @@
 import { ListGroup } from "react-bootstrap";
-
+import "../../animation.css"
 export default function Alerts() {
   const notifications = [
     {
@@ -53,7 +53,8 @@ export default function Alerts() {
   ];
 
   return (
-    <div style={{ 
+    <div  className="page-transition"
+      style={{ 
       padding: "16px",
       backgroundColor: "#F8F9FA",
       height: "100%",

@@ -1,12 +1,14 @@
 // Body.tsx
 import { useView } from "../../context/ViewContext";
 import Home from "../../pages/home/Home";
-
+import "../../animation.css"
 function Body() {
   const { currentView } = useView();
 
   return (
-    <div style={{
+    <div 
+     className="page-transition"
+    style={{
 
       flex: 1,                    // Takes all remaining space
       minHeight: 0,               // Critical for overflow to work

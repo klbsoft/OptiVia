@@ -10,6 +10,7 @@ pub async fn login(Json(credentials): Json<UserLogin>) -> String {
     let user = match db().users().find_one(doc! { "email": &credentials.email }).await {
         Ok(Some(user)) => user,
         Ok(None) => {
+            println!("FAIL TO LOGIN");      
             return "FAIL:Usuario no encontrado".to_string();
         }
         Err(e) => {
@@ -21,9 +22,11 @@ pub async fn login(Json(credentials): Json<UserLogin>) -> String {
     let crypto = CryptoService::new();
     match crypto.verify_non_deterministic_hash(&credentials.password, &user.password_hash) {
         Ok(true) => {
+            println!("LOGIN SUCESSFULL");
             format!("OK:{}", user.id)
         }
         Ok(false) => {
+            println!("FAIL TO LOGIN");  
             "FAIL:Contraseña incorrecta".to_string()
         }
         Err(_) => {

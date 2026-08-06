@@ -2,6 +2,7 @@ import { useState } from "react";
 import { commonStyles } from "../../components/theme/default";
 import Login from "../login/Login";
 import SignUp from "../singup/Singup";
+import "../../animation.css"
 
 function Auth() {
   const [view, setView] = useState<"choice" | "login" | "signup">("choice");
@@ -11,6 +12,7 @@ function Auth() {
 
   return (
     <div
+     className="page-transition"
       style={{
         padding: "16px",
         display: "flex",

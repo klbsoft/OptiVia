@@ -2,26 +2,34 @@ import { useState } from "react";
 import { commonStyles } from "../../components/theme/default";
 import { useView } from "../../context/ViewContext";
 import Report from "../report/Report";
-
+import { useUserSession } from "../../context/UserSessionContext";
+import "../../animation.css"
 function Settings() {
+  const {session,updateSession} = useUserSession(); 
   const { setCurrentView } = useView();
-  const [notifications, setNotifications] = useState({
-    trip_updates: true,
-    payment_reminders: true,
-    security_alerts: true,
-    promotions: false,
-  });
+  const [notifications, setNotifications] = useState(session.settings.notifications);
   const [language, setLanguage] = useState("es");
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
   const languages = [
     { value: "es", label: "Español" },
-    { value: "en", label: "English" },
   ];
 
 const handleToggle = (key: keyof typeof notifications) => {
-  setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
+ 
+  setNotifications((prev) => {
+    const updated = { ...prev, [key]: !prev[key] };
+    updateSession({
+      settings: {
+        ...session.settings,
+        notifications: updated
+      }
+    });
+    return updated;
+  });
 };
+
+
 
   const labelStyle: React.CSSProperties = {
     fontSize: "13px",
@@ -62,6 +70,7 @@ const handleToggle = (key: keyof typeof notifications) => {
 
   return (
     <div
+        className="page-transition"
       style={{
         padding: "16px",
         display: "flex",
@@ -110,10 +119,10 @@ const handleToggle = (key: keyof typeof notifications) => {
               Recordatorios de pago
             </span>
             <div
-              style={toggleSwitchStyle(notifications.payment_reminders)}
-              onClick={() => handleToggle("payment_reminders")}
+              style={toggleSwitchStyle(notifications.price_changes)}
+              onClick={() => handleToggle("price_changes")}
             >
-              <div style={toggleCircleStyle(notifications.payment_reminders)} />
+              <div style={toggleCircleStyle(notifications.price_changes)} />
             </div>
           </div>
 
@@ -188,6 +197,7 @@ const handleToggle = (key: keyof typeof notifications) => {
                     onClick={() => {
                       setLanguage(lang.value);
                       setShowLanguageDropdown(false);
+                      updateSession({ settings: { ...session.settings, language: lang.value } });
                     }}
                     style={{
                       padding: "12px 16px",

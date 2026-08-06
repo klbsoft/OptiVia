@@ -3,9 +3,8 @@
  import Searcher  from "../../pages/searcher/Searcher";
  import Map from "../../pages/map/Map"
  import {commonStyles} from "../theme/default";
-
-import { useFooter } from "../../context/FooterContext";
-
+ import { useFooter } from "../../context/FooterContext";
+ import "../../animation.css"
 function Footer(){
   const {setCurrentView} = useView();
   const { isEnabled,leftBorder,rightBorder,setLeftView,setRightView} = useFooter();
@@ -13,7 +12,9 @@ function Footer(){
  
  
   return (
-    <div style={{ 
+    <div 
+     className="page-transition"
+    style={{ 
       display: isEnabled?"flex":"none",
       flexShrink: 0,
       width: "100%",

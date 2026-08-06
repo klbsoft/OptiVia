@@ -1,25 +1,69 @@
 import { useState } from "react";
 import { commonStyles } from "../../components/theme/default";
 import { useAuth } from "../../context/AuthContext";
- 
+import { API_LOGIN, API_SESSION } from "../../constants/config";
+import type { UserSession } from "../../session/UserSession";
+import { useUserSession } from "../../context/UserSessionContext";
+import "../../animation.css"
 function Login({ onSwitchToSignup }: { onSwitchToSignup: () => void }) {  const { login } = useAuth();
-  const [phone, setPhone] = useState("");
+  const [email, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
+  const {setSession} = useUserSession(); 
  
 
-  const handleLogin = () => {
-    if (!phone || !password) {
+  const handleLogin = async() => {
+    if (!email || !password) {
       setError("Todos los campos son requeridos");
       return;
     }
 
     // Mock login - replace with API call
-    console.log("Login:", { phone, password });
+    console.log("Login:", { email, password });
+
+  if (!email || !password) {
+    setError("Todos los campos son requeridos");
+    return;
+  }
+
+    try {
+     
+      let response = await fetch(API_LOGIN ,{
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email:email, password:password }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al iniciar sesión");
+      }
+      let text = await response.text();
+      const split = text.split(':');
+      const result = split[0];
+      const info = split[1];  
+      console.log(text);  
+      if (result === "OK"){
+          response = await fetch(API_SESSION, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ user_id:info}),
+          });
+          text = await response.text();
+          const parsed: UserSession = await JSON.parse(text);
+          
+          console.log(parsed);
+          setSession(parsed)
+          login();
+          return; 
+      }
+     alert(`No se pudo iniciar la sesión: ${info}`)
+      // login();
+    } catch {
+      alert("No se pudo verificar el usuario o contraseña. Intente de nuevo.");
+    }
     
     // Simulate successful login
-    login();
+    // login();
   };
 
   const inputStyle: React.CSSProperties = {
@@ -44,6 +88,7 @@ function Login({ onSwitchToSignup }: { onSwitchToSignup: () => void }) {  const 
 
   return (
     <div
+     className="page-transition"
       style={{
         padding: "16px",
         display: "flex",
@@ -99,16 +144,17 @@ function Login({ onSwitchToSignup }: { onSwitchToSignup: () => void }) {  const 
       >
         {/* Phone */}
         <div>
-          <div style={labelStyle}>Teléfono</div>
+          <div style={labelStyle}>Correo electrónico </div>
           <input
-            type="tel"
+            type="email"
+            maxLength={100}
             style={inputStyle}
-            value={phone}
+            value={email}
             onChange={(e) => {
               setPhone(e.target.value);
               setError("");
             }}
-            placeholder="(809) 000-0000"
+            placeholder="correo@ejemplo.com"
           />
         </div>
 
@@ -117,6 +163,7 @@ function Login({ onSwitchToSignup }: { onSwitchToSignup: () => void }) {  const 
           <div style={labelStyle}>Contraseña</div>
           <input
             type="password"
+            maxLength={10}
             style={inputStyle}
             value={password}
             onChange={(e) => {
@@ -144,9 +191,9 @@ function Login({ onSwitchToSignup }: { onSwitchToSignup: () => void }) {  const 
       {/* Login Button */}
       <button
         onClick={handleLogin}
-        disabled={!phone || !password}
+        disabled={!email || !password}
         style={{
-          backgroundColor: phone && password ? commonStyles.blue : "#CCCCCC",
+          backgroundColor: email && password ? commonStyles.blue : "#CCCCCC",
           border: "none",
           width: "80%",
           borderRadius: "20px",
@@ -155,7 +202,7 @@ function Login({ onSwitchToSignup }: { onSwitchToSignup: () => void }) {  const 
           marginTop: "24px",
           fontSize: commonStyles.button_fontSize,
           fontWeight: commonStyles.button_fontWeight,
-          cursor: phone && password ? "pointer" : "not-allowed",
+          cursor: email && password ? "pointer" : "not-allowed",
         }}
       >
         Entrar

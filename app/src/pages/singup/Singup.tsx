@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { commonStyles } from "../../components/theme/default";
-import { useAuth } from "../../context/AuthContext";
+// import { useAuth } from "../../context/AuthContext";
+import Submit from "./Submit";
 import StepIndicator from "./StepIndicator";
 import PersonalDataForm from "./PersonalDataForm";
 import CardForm from "./CardForm";
 import SuccessMessage from "./SuccessMessage";
 import Logo from "./Logo";
+// import Login from "../login/Login";
+import "../../animation.css"
+// import getRandomFormData from "./Tester"
 
 export interface SignUpFormData {
   name: string;
@@ -31,7 +35,7 @@ export interface CardFormData {
 }
 
 function SignUp({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
-  const { login } = useAuth();
+  // const { login } = useAuth();
   const [step, setStep] = useState<"user" | "card">("user");
   const [saved, setSaved] = useState(false);
 
@@ -59,7 +63,10 @@ function SignUp({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
     cardType: "visa",
     addCard: false,
   });
-
+  // const run_test=()=>{
+  //   const r = getRandomFormData();
+  //   Submit(r.user,r.card);
+  // }
   const handleSignUp = () => {
     const { name, lastName, email, phone, password, dateOfBirth, isSpecialUser, userType } = formData;
 
@@ -74,28 +81,34 @@ function SignUp({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
       date_of_birth: dateOfBirth || null,
       email,
       phone: phone || null,
-      password_hash: `hashed_${password}`,
+      password_hash: `${password}`,
       user_type: finalUserType,
       is_verified: finalUserType === "regular",
     };
 
     console.log("New user:", newUser);
 
-    if (cardData.addCard && cardData.cardNumber && cardData.expiryDate && cardData.cvv) {
-      const newCard = {
-        name_on_card: cardData.nameOnCard || `${name} ${lastName}`,
-        card_number: cardData.cardNumber.replace(/-/g, ""),
-        expiry_date: cardData.expiryDate,
-        cvv: cardData.cvv,
-        card_type: cardData.cardType,
-      };
-      console.log("New card:", newCard);
-    }
+    // if (cardData.addCard && cardData.cardNumber && cardData.expiryDate && cardData.cvv) {
+   
+    const newCard = {
+      name_on_card: cardData.nameOnCard || `${name} ${lastName}`,
+      card_number: cardData.cardNumber.replace(/-/g, ""),
+      expiry_date: cardData.expiryDate,
+      cvv: cardData.cvv,
+      card_type: cardData.cardType,
+    };
+    console.log("New card:", newCard);
+    console.log({formData});
+      // console.log("New card:", newCard);
 
     setSaved(true);
-    setTimeout(() => {
-      login();
-    }, 1500);
+    setTimeout(async() => {
+        const submit = await Submit(formData,cardData); 
+        if (submit === "ok"){
+          onSwitchToLogin();
+        }
+        console.log(submit);
+    }, 500);
   };
 
   if (saved) {
@@ -118,6 +131,7 @@ function SignUp({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
 
   return (
     <div
+        className="page-transition"
       style={{
         padding: "16px",
         display: "flex",
@@ -153,6 +167,8 @@ function SignUp({ onSwitchToLogin }: { onSwitchToLogin: () => void }) {
       <button
         onClick={handleSignUp}
         disabled={step === "user" ? !isUserStepValid() : false}
+        // onClick={run_test}
+        
         style={{
           backgroundColor: (step === "user" && !isUserStepValid()) ? "#CCCCCC" : commonStyles.blue,
           border: "none",

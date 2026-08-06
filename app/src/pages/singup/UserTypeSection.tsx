@@ -17,7 +17,7 @@ const labelStyle: React.CSSProperties = {
 
 function UserTypeSection({ formData, setFormData }: UserTypeSectionProps) {
   const updateField = (field: keyof SignUpFormData, value: any) => {
-    setFormData({ ...formData, [field]: value });
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -82,7 +82,15 @@ function UserTypeSection({ formData, setFormData }: UserTypeSectionProps) {
             <div style={labelStyle}>Tipo de beneficio *</div>
             <div style={{ display: "flex", gap: "8px" }}>
               <button
-                onClick={() => updateField("userType", "gov")}
+                onClick={() => {
+                  if (formData.userType === "gov") {
+                    updateField("userType", "");
+                    updateField("verificationDoc", null);
+                    updateField("docPreview", null);
+                  } else {
+                    updateField("userType", "gov");
+                  }
+                }}
                 style={{
                   flex: 1,
                   padding: "10px",
@@ -98,7 +106,15 @@ function UserTypeSection({ formData, setFormData }: UserTypeSectionProps) {
                 🏛️ Servidor Público
               </button>
               <button
-                onClick={() => updateField("userType", "student")}
+                onClick={() => {
+                  if (formData.userType === "student") {
+                    updateField("userType", "");
+                    updateField("verificationDoc", null);
+                    updateField("docPreview", null);
+                  } else {
+                    updateField("userType", "student");
+                  }
+                }}
                 style={{
                   flex: 1,
                   padding: "10px",

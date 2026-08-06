@@ -1,26 +1,30 @@
 import { useState } from "react";
 import { commonStyles } from "../../components/theme/default";
-
+import { useUserSession } from "../../context/UserSessionContext";
+import "../../animation.css"
 const mockUser = {
+  id:"not-known",
   name: "Ana",
   last_name: "García",
-  date_of_birth: "1995-03-14",
-  email: "ana.garcia@email.com",
-  phone: "(809) 343-8383",
+  date_of_birth: "1024-01-01",
+  email: "not@real.email",
+  phone: "(255) 255-1024",
 };
 
 function Profile() {
-  const [user, setUser] = useState(mockUser);
+  const {session,updateSession} = useUserSession();
+  const [user, setUser] = useState(session?.user||mockUser);
   const [saved, setSaved] = useState(false);
 
-  const handleChange = (field: string, value: string) => {
-    setUser((prev) => ({ ...prev, [field]: value }));
-    setSaved(false);
-  };
+const handleChange = (field: string, value: string) => {
+  setUser((prev) => ({ ...prev, [field]: value } as typeof prev));
+  setSaved(false);
+};
 
   const handleSave = () => {
-    setSaved(true);
-    console.log("Guardado:", user);
+   updateSession({ user: user });
+   setSaved(true);
+  console.log("Guardado:", user);
     // API call here later
   };
 
@@ -46,6 +50,7 @@ function Profile() {
 
   return (
     <div
+        className="page-transition"
       style={{
         padding: "16px",
         paddingTop: "16px",

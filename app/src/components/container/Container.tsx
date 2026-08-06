@@ -8,17 +8,21 @@ import { useAuth } from "../../context/AuthContext";
 import Auth from "../../pages/auth/Auth";
 // import { useState } from "react";
 import { FooterProvider } from "../../context/FooterContext";
-
+// import SignUp from "../../pages/singup/Singup";
+// import Login from "../../pages/login/Login";
+import { UserSessionProvider } from "../../context/UserSessionContext";
+import "../../animation.css"
 function Box() {
   const { isAuthenticated } = useAuth();
  
- 
-  // if (!isAuthenticated) {
-  //   return <Auth />;
-  // }
+  if (!isAuthenticated) {
+    return <Auth />;
+  }
 
   return (
-    <div style={{
+    <div 
+      className="page-transition"
+      style={{
       display: "flex",
       flexDirection: "column",
       flex: 1,          
@@ -27,19 +31,22 @@ function Box() {
       margin:'0px',
       padding:"0px",
     }}>
-    <FooterProvider>
-      <Header />
-      <Body />
-      <Footer />
-    </FooterProvider>
+      <FooterProvider>
+        <Header />
+        <Body />
+        <Footer />
+      </FooterProvider>
     </div>
   );
 }
 
 function Container() {
+  
   return (
     <AuthProvider>
-      <Box />
+      <UserSessionProvider>        
+        <Box />
+    </UserSessionProvider>
     </AuthProvider>
   );
 }

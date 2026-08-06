@@ -2,6 +2,7 @@ import { Card, Form, Image } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useView } from "../../context/ViewContext";
 import Searcher from "../searcher/Searcher"
+import "../../animation.css"
 // import Report from "../report/Report";
 // import Settings from "../settings/Settings";
 // import SignUp from "../singup/Singup";
@@ -34,7 +35,9 @@ export default function Home() {
   
   return (
     <>
-      <div style={{ 
+      <div 
+       className="page-transition"
+      style={{ 
         padding: "16px",
         overflowY: "auto",        // ADDED
         flex: 1                   // ADDED  

@@ -16,8 +16,9 @@ use axum::{
     Router, extract::DefaultBodyLimit, routing::{get, post}
  
 };
+use tower_http::cors::{Any, CorsLayer};
  
-use crate::{components::dbfactory::{Mongo, db, init_db, list_users}, tester::endpoint::{test_db, test_end_point}}; 
+use crate::{actions::{add_payment_method, get_user_session, update_user_session}, components::dbfactory::{Mongo, db, init_db, list_users}, tester::endpoint::{test_db, test_end_point}}; 
 use crate::actions::{signup,upload,login};
 
 
@@ -28,7 +29,8 @@ async fn main() {
     // let config = load_config();
     init_db().await; 
     // list_users().await;
-
+    let PORT = 3299; 
+    let URL = format!("0.0.0.0:{}",PORT);
      
     
     // let db_path = &config.db_path;
@@ -39,18 +41,22 @@ async fn main() {
     let app = Router::new()
         // .route("/test_db", get(test_db)) // Removed extra ()
         .route("/", get(test_end_point))
+        .route("/test",get(test_end_point))
          //.route("/login", post())
-        .route("/signup", post(signup))
+    
+        .route("/session",post(get_user_session))
+        .route("/sync",post(update_user_session))
+        .route("/apm",post(add_payment_method))
         .route("/upload", post(upload))
-        .route("/login", post(login))
-
-        .layer(DefaultBodyLimit::disable());
+    
+        .route("/signup", post(signup))
+    
+        .route("/login", post(login));
     
 
-    let port = 3299; 
-    let addr = format!("0.0.0.0:{}",port);
-    println!("Server running on http://{}", addr);  
+
+    println!("Server running on http://{}", URL);  
     
-    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+    let listener = tokio::net::TcpListener::bind(URL).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }

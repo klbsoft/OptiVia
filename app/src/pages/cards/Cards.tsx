@@ -1,24 +1,18 @@
 import { useState } from "react";
 import { commonStyles } from "../../components/theme/default";
-
-interface Card {
-  id: string;
-  cardNumber: string;
-  expiryDate: string;
-  cvv: string;
-  cardType: string;
-}
-
+import { useUserSession } from "../../context/UserSessionContext";
+import type { Card } from "../../session/UserSession";
+import "../../animation.css"
+ 
 function Cards() {
-  const [nameOnCard, setNameOnCard] = useState("");
-
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiryDate, setExpiryDate] = useState("");
+  const [name_on_card, setNameOnCard] = useState("");
+  const [card_number, setCardNumber] = useState("");
+  const [expiry_date, setExpiryDate] = useState("");
   const [cvv, setCvv] = useState("");
-  const [cardType, setCardType] = useState("visa");
+  const [card_type, setCardType] = useState("visa");
   const [showCardType, setShowCardType] = useState(false);
-  const [savedCards, setSavedCards] = useState<Card[]>([]);
-
+  const { session, updateSession } = useUserSession();
+  const [savedCards, setSavedCards] = useState<Card[]>(session.cards);
   const cardTypes = ["visa", "mastercard"];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -27,12 +21,14 @@ function Cards() {
     // Create new card object
     const newCard: Card = {
       id: Date.now().toString(),
-      cardNumber,
-      expiryDate,
+      name_on_card,
+      card_number,
+      expiry_date,
       cvv,
-      cardType
+      card_type
     };
-    
+    updateSession({ cards: [...savedCards, newCard] });
+
     // Add card to the list
     setSavedCards([...savedCards, newCard]);
     
@@ -43,16 +39,28 @@ function Cards() {
     setNameOnCard("");
     setCardType("visa");
     
-    console.log({ cardNumber, expiryDate, cvv, cardType });
+    console.log({ card_number, expiry_date, cvv, card_type });
   };
 
   const handleRemoveCard = (cardId: string) => {
+    updateSession({ cards: savedCards.filter(card => card.id !== cardId) });
     setSavedCards(savedCards.filter(card => card.id !== cardId));
   };
 
   const maskCardNumber = (number: string) => {
     return `**** **** **** ${number.slice(-4)}`;
   };
+  const get_payment_type = (card_type:string)=>{
+    switch (card_type){
+      case "Visa": //card.card_type === "visa" ? "Visa" : "Mastercard"
+      return "Visa";
+      case "Mastercard":
+        return "Mastercard";
+      case "Balance":
+        return "Balance";
+    }
+    return "No Soportada"; 
+  }
 const formatCardNumber = (value: string): string => {
   // Remove all non-digit characters
   const digits = value.replace(/\D/g, '');
@@ -65,7 +73,9 @@ const formatCardNumber = (value: string): string => {
   return groups ? groups.join('-') : '';
 };
   return (
-    <div style={{ 
+    <div 
+     className="page-transition"
+    style={{ 
       padding: "16px", 
       paddingTop: "16px",
       display: "flex",
@@ -82,7 +92,7 @@ const formatCardNumber = (value: string): string => {
           type="text"
           placeholder="Nombre en la Tarjeta (opcional)."
           maxLength={16}
-          value={nameOnCard}
+          value={name_on_card}
           onChange={(e) => setNameOnCard(e.target.value)}
           style={{
             borderRadius: "20px",
@@ -101,7 +111,7 @@ const formatCardNumber = (value: string): string => {
           type="text"
           placeholder="Número de Tarjeta"
           maxLength={19}
-          value={cardNumber}
+          value={card_number}
           onChange={(e) => {
               const formatted = formatCardNumber(e.target.value);
               setCardNumber(formatted);
@@ -124,7 +134,7 @@ const formatCardNumber = (value: string): string => {
           type="date"
           placeholder="Fecha de Expiración (MM/YY)"
           maxLength={5}
-          value={expiryDate}
+          value={expiry_date}
           onChange={(e) => setExpiryDate(e.target.value)}
           style={{
             borderRadius: "20px",
@@ -177,7 +187,7 @@ const formatCardNumber = (value: string): string => {
             fontSize: commonStyles.text_font_size
           }}
         >
-          {cardType === "visa" ? "Visa" : "Mastercard"}
+          {card_type === "visa" ? "Visa" : "Mastercard"}
           <span style={{ position: "absolute", right: "16px", top: "50%", transform: "translateY(-50%)", color: commonStyles.green }}>▼</span>
         </div>
 
@@ -260,19 +270,24 @@ const formatCardNumber = (value: string): string => {
               >
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: "bold", marginBottom: "4px" }}>
-                    {card.cardType === "visa" ? "Visa" : "Mastercard"}
+                    {get_payment_type(card.card_type) }
                   </div>
                   <div style={{ fontSize: "14px", opacity: 0.8 }}>
-                    {maskCardNumber(card.cardNumber)}
+                    {
+                      card.card_type === "Balance"? `RD$ ${card.card_number}` :maskCardNumber(card.card_number)
+                    }
                   </div>
                   <div style={{ fontSize: "12px", opacity: 0.6 }}>
-                    Exp: {card.expiryDate}
+                    {
+                      card.card_type === "Balance"?"":`Exp: ${card.expiry_date}`
+                    }
                   </div>
                 </div>
                 <button
+                  disabled={card.card_type === "Balance"}
                   onClick={() => handleRemoveCard(card.id)}
                   style={{
-                    backgroundColor: "#ff4444",
+                    backgroundColor: card.card_type === "Balance" ? "gray" : "#ff4444",
                     border: "none",
                     borderRadius: "20px",
                     padding: "8px 16px",

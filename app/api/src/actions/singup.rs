@@ -1,6 +1,7 @@
 
 use axum::Json;
 use mongodb::bson::doc;
+use crate::identity::identities::{NotificationSettings, UserSettings};
 use crate::identity::{PaymentMethod, Wallet};
 use crate::utils::{random_uuid,get_dr_time};
 
@@ -21,11 +22,11 @@ pub async fn signup(Json(user): Json<UserClient>) -> String {
     match existing {
     Ok(Some(_)) => {
         println!("Email already exists");
-        return "FAILED:El correo ya está registrado".to_string();
+        return "FAIL:El correo ya está registrado".to_string();
     }
     Err(e) => {
         println!("Database error: {}", e);
-        return "FAILED:Error en la base de datos".to_string();
+        return "FAIL:Error en la base de datos".to_string();
     }
     Ok(None) => {
         let crypto = CryptoService::new(); 
@@ -37,7 +38,7 @@ pub async fn signup(Json(user): Json<UserClient>) -> String {
             rehash_value = re_hash.unwrap(); 
         } else {
             println!("Hashing error: {:?}", re_hash.err());
-            return "FAILED:Error al procesar la contraseña".to_string();
+            return "FAIL:Error al procesar la contraseña".to_string();
         }
         let new_user = User {
             email: user.email,
@@ -64,7 +65,7 @@ pub async fn signup(Json(user): Json<UserClient>) -> String {
                 let balance_id = random_uuid("pm");
                 let wallet = Wallet {
                     default_id:balance_id.clone(),
-                    id: random_uuid("wallet"),
+                    id: user_id.clone(),
                     user_id: user_id.clone(),
                     payment_methods: vec![
                         PaymentMethod::Balance {
@@ -75,23 +76,45 @@ pub async fn signup(Json(user): Json<UserClient>) -> String {
                         }
                     ],
                     created_at: date.clone(),
-                    updated_at: date,
+                    updated_at: date.clone(),
                 };
                 
                 match db().wallets().insert_one(wallet).await {
-                    Ok(_) => println!("Wallet created for user {}", user_id),
+                    Ok(_) => println!("Wallet created for user {}", user_id.clone()),
                     Err(e) => {
-                        println!("Failed to create wallet: {}", e);
-                        return "FAILED:No se pudo crear el usuario".to_string();
+                        println!("FAIL to create wallet: {}", e);
+                        return "FAIL:No se pudo crear el usuario".to_string();
                     }
                 }
-                format!("OK:{}", user_id)
+                // return format!("OK:{}", user_id.clone());
             }
             Err(e) => {
-                println!("Failed to create user: {}", e);
-                "FAILED:No se pudo crear el usuario".to_string()
+                println!("FAIL to create user: {}", e);
+                return "FAIL:No se pudo crear el usuario".to_string();
             }
         }
+
+        let notifications = NotificationSettings{
+            trip_updates:true,
+            security_alerts:true,
+            price_changes:true,
+            promotions:true
+        };
+        let user_settings = UserSettings{
+            id:user_id.clone(),
+            notifications,
+            language:"Español".to_string(),
+            created_at:date.clone(),
+            updated_at:date.clone()
+        };
+        match db().user_settings().insert_one(user_settings).await {
+            Ok(_) => println!("User Settings created for user {}", user_id),
+            Err(e) => {
+                println!("FAIL to create wallet: {}", e);
+                return "FAIL:No se pudo crear el usuario".to_string();
+            }
+        }
+        return format!("OK:{}",user_id)
     }
 }
 }

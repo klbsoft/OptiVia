@@ -1,10 +1,12 @@
 import Container from "./components/container/Container";
 import { ViewProvider } from "./context/ViewContext";
 import Home from "./pages/home/Home";
-
+import "./animation.css"
 export default function App() {
   return (
-    <div style={{ 
+    <div 
+      className="page-transition"
+      style={{ 
       maxWidth: "480px",
       width: "100%",
       margin: "0%",

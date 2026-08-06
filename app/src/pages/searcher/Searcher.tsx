@@ -1,23 +1,29 @@
 import {  Image, Button } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useView } from "../../context/ViewContext";
 import Map from "../map/Map"
+import { useFooter } from "../../context/FooterContext";
+import "../../animation.css"
 export default function Searcher() {
   const [origen, setOrigen] = useState("");
   const [destino, setDestino] = useState("");
   const [showOrigen, setShowOrigen] = useState(false);
   const [showDestino, setShowDestino] = useState(false);
   const { setCurrentView } = useView();
+  const {setRightView,setLeftView} = useFooter();
 
   const lugares = ["Autopista de San Isidro", "Carretera Mella"];
 
   const handleBuscar = () => {
     //alert(`${showDestino} ${showOrigen}`);
      if (!showDestino && !showOrigen){
+        setRightView();
         setCurrentView(<Map/>)
      }
   };
-
+useEffect(() => {
+  setLeftView();
+}, []);
   return (
     <>
       <div style={{ padding: "16px",paddingTop:"16px" }}>
@@ -29,7 +35,10 @@ export default function Searcher() {
         {/* Origen */}
         <div style={{ position: "relative", width: "100%", marginBottom: "16px" }}>
           <div 
-            onClick={() => setShowOrigen(!showOrigen)}
+            onClick={() => {
+              setShowOrigen(!showOrigen);
+
+            }}
             style={{ 
               borderRadius: "20px",
               padding: "12px 16px 12px 50px",

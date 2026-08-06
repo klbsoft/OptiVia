@@ -77,8 +77,9 @@ pub enum PaymentMethod {
     Card {
         id: String,
         name_on_card: String,
-        last_four: String,
-        brand: String,
+        card_number: String,
+        card_type:String,
+        cvv: String,
         expiry_date: String,
         created_at: String,
         updated_at: String,
@@ -91,21 +92,17 @@ pub enum PaymentMethod {
         updated_at: String,
     },
 }
+
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Transaction {
     pub id: String,
     pub user_id: String,
-    pub payment_method: String, // "card"
+    pub payment_method: PaymentMethod,  
     pub amount: f64,
     pub discount_applied: f64,
-    pub final_amount: f64,
-    #[serde(rename = "type")]
-    pub transaction_type: String, // "trip_payment"
     pub status: String, // "completed"
-    pub bus_id: String,
-    pub route_id: String,
     pub trip_id: String,
-    pub fare_snapshot_id: String,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -125,22 +122,22 @@ pub struct Driver {
     pub updated_at: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Bus {
-    pub id: String,
-    pub plate_number: String,
-    pub model: String,
-    pub capacity: i32,
-    pub year: i32,
-    pub maintenance_status: String, // "operational"
-    pub current_latitude: f64,
-    pub current_longitude: f64,
-    pub speed: f64,
-    pub status: String, // "in_service"
-    pub last_updated: String,
-    pub created_at: String,
-    pub updated_at: String,
-}
+    #[derive(Debug, Serialize, Deserialize)]
+    pub struct Bus {
+        pub id: String,
+        pub plate_number: String,
+        pub model: String,
+        pub capacity: i32,
+        pub year: i32,
+        pub maintenance_status: String, // "operational"
+        pub current_latitude: f64,
+        pub current_longitude: f64,
+        pub speed: f64,
+        pub status: String, // "in_service"
+        pub last_updated: String,
+        pub created_at: String,
+        pub updated_at: String,
+    }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RouteStop {
@@ -175,7 +172,6 @@ pub struct Trip {
     pub bus_id: String,
     pub route_id: String,
     pub driver_id: String,
-    pub fare_snapshot_id: String,
     pub start_time: String,
     pub end_time: Option<String>,
     pub status: String, // "in_progress"
@@ -193,13 +189,13 @@ pub struct PassengerTrip {
     pub trip_id: String,
     pub transaction_id: String,
     pub boarded_at: String,
-    pub exited_at: Option<String>,
+    pub exited_at: String,
     pub status: String, // "in_transit"
     pub fare_amount: f64,
     pub discount_applied: f64,
     pub final_amount: f64,
     pub created_at: String,
-    pub updated_at: String,
+    pub updated_at: String, 
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -213,4 +209,78 @@ pub struct FareHistory {
     pub modified_by: String,
     pub created_at: String,
     pub updated_at: String,
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UserInfo {
+    pub id: String,
+    pub name: String,
+    pub last_name: String,
+    pub date_of_birth: String,
+    pub email: String,
+    pub phone: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Card {
+    pub id: String,
+    pub name_on_card: String,
+    pub card_number: String,
+    pub expiry_date: String,
+    pub cvv: String,
+    pub card_type: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TripHistory {
+    pub id: String,
+    pub route_name: String,
+    pub driver: String,
+    pub drop_off_point: String,
+    pub price: f64,
+    pub payment_method: Card,
+    pub date: String,
+    pub status: String,
+}
+
+#[derive(Debug, Serialize, Deserialize,Clone)]
+pub struct NotificationSettings {
+    pub trip_updates: bool,
+    pub price_changes: bool,
+    pub security_alerts: bool,
+    pub promotions: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UserSettings {
+    pub id: String, 
+    pub notifications: NotificationSettings,
+    pub language: String,
+    pub created_at: String,
+    pub updated_at: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UserSession {
+    pub user: UserInfo,
+    pub cards: Vec<Card>,
+    pub history: Vec<TripHistory>,
+    pub settings: UserSettings,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UserSessionRequest {
+    pub user_id: String,
 }

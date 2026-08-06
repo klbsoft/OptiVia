@@ -2,12 +2,14 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+
+
 export default defineConfig({
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      base: '/opti-via/',  // Match your base path
+      base: '/opti-via',  // Match your base path
       manifest: {
         name: 'Opti Via',
         short_name: 'app',
@@ -38,5 +40,5 @@ export default defineConfig({
       }
     })
   ],
-  base: '/opti-via/',
+  base: '/opti-via',
 })

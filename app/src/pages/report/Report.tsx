@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { commonStyles } from "../../components/theme/default";
 import { useView } from "../../context/ViewContext";
 import Home from "../home/Home";
+import "../../animation.css"
 
 const reportTypes = [
   { value: "fear", label: "Miedo / Inseguridad" },
@@ -98,6 +99,7 @@ function Report() {
   if (sent) {
     return (
       <div
+          className="page-transition"
         style={{
           padding: "16px",
           display: "flex",

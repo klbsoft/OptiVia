@@ -1,5 +1,5 @@
 import { commonStyles } from "../../components/theme/default";
-
+import "../../animation.css"
 // Mock data — replace with actual API/state data later
 const mockHistory = [
   {
@@ -31,7 +31,9 @@ const mockHistory = [
 
 function History() {
   return (
-    <div style={{ padding: "20px", color: commonStyles.blue }}>
+    <div 
+     className="page-transition"
+    style={{ padding: "20px", color: commonStyles.blue }}>
       {/* Header */}
       <h3
         style={{

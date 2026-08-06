@@ -38,6 +38,7 @@ function PersonalDataForm({ formData, setFormData }: PersonalDataFormProps) {
       <div>
         <div style={labelStyle}>Nombre *</div>
         <input
+          maxLength={50}
           style={inputStyle}
           value={formData.name}
           onChange={(e) => updateField("name", e.target.value)}
@@ -48,6 +49,7 @@ function PersonalDataForm({ formData, setFormData }: PersonalDataFormProps) {
       <div>
         <div style={labelStyle}>Apellido *</div>
         <input
+          maxLength={50}
           style={inputStyle}
           value={formData.lastName}
           onChange={(e) => updateField("lastName", e.target.value)}
@@ -68,6 +70,7 @@ function PersonalDataForm({ formData, setFormData }: PersonalDataFormProps) {
       <div>
         <div style={labelStyle}>Correo electrónico *</div>
         <input
+          maxLength={100}
           type="email"
           style={inputStyle}
           value={formData.email}
@@ -79,11 +82,19 @@ function PersonalDataForm({ formData, setFormData }: PersonalDataFormProps) {
       <div>
         <div style={labelStyle}>Teléfono</div>
         <input
-          type="tel"
+          type="text"
           style={inputStyle}
           value={formData.phone}
-          onChange={(e) => updateField("phone", e.target.value)}
-          placeholder="(809) 000-0000"
+          maxLength={14}
+          onChange={(e) =>{ 
+                const raw = e.target.value.replace(/\D/g, "").slice(0, 10);
+                let formatted = "";
+                if (raw.length > 0) formatted += "(" + raw.slice(0, 3);
+                if (raw.length > 3) formatted += ") " + raw.slice(3, 6);
+                if (raw.length > 6) formatted += "-" + raw.slice(6, 10);
+                updateField("phone", formatted);
+          }}
+          placeholder="(000) 000-0000"
         />
       </div>
 
@@ -92,6 +103,7 @@ function PersonalDataForm({ formData, setFormData }: PersonalDataFormProps) {
       <div>
         <div style={labelStyle}>Contraseña *</div>
         <input
+          maxLength={10}
           type="password"
           style={inputStyle}
           value={formData.password}
@@ -103,6 +115,7 @@ function PersonalDataForm({ formData, setFormData }: PersonalDataFormProps) {
       <div>
         <div style={labelStyle}>Confirmar contraseña *</div>
         <input
+          maxLength={10}
           type="password"
           style={inputStyle}
           value={formData.confirmPassword}

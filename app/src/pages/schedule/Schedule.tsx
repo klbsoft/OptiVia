@@ -1,5 +1,5 @@
 import { ListGroup } from "react-bootstrap";
-
+import "../../animation.css"
 export default function Schedule() {
   // Solo horarios principales - menos cantidad
   const departureTimes = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"];
@@ -22,7 +22,9 @@ export default function Schedule() {
   };
 
   return (
-    <div style={{ padding: "16px" }}>
+    <div 
+        className="page-transition"
+    style={{ padding: "16px" }}>
       <h5 style={{ color: "#0162BF", marginBottom: "16px", fontSize: "16px" }}>
         San Isidro → La Mella
       </h5>

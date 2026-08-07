@@ -1,5 +1,7 @@
 import { commonStyles } from "../../components/theme/default";
 import "../../animation.css"
+import Report from "../report/Report";
+import { useView } from "../../context/ViewContext";
 // Mock data — replace with actual API/state data later
 const mockHistory = [
   {
@@ -30,6 +32,7 @@ const mockHistory = [
 ];
 
 function History() {
+  const {setCurrentView} = useView();
   return (
     <div 
      className="page-transition"
@@ -165,8 +168,10 @@ function History() {
               cursor: "pointer",
             }}
             onClick={() => {
+
+              setCurrentView(<Report/>);
               // Open fear report modal/screen for this trip
-              console.log("Reportar viaje:", item.id);
+             // console.log("Reportar viaje:", item.id);
             }}
           >
             ⚠ Reportar incidente

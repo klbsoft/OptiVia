@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { commonStyles } from "../../components/theme/default";
 import { useView } from "../../context/ViewContext";
 import Report from "../report/Report";
@@ -15,21 +15,22 @@ function Settings() {
     { value: "es", label: "Español" },
   ];
 
-const handleToggle = (key: keyof typeof notifications) => {
- 
+ const handleToggle = (key: keyof typeof notifications) => {
   setNotifications((prev) => {
     const updated = { ...prev, [key]: !prev[key] };
-    updateSession({
-      settings: {
-        ...session.settings,
-        notifications: updated
-      }
-    });
     return updated;
   });
 };
 
-
+// Sync to session after notifications change
+useEffect(() => {
+  updateSession({
+    settings: {
+      ...session.settings,
+      notifications
+    }
+  });
+}, [notifications]);
 
   const labelStyle: React.CSSProperties = {
     fontSize: "13px",

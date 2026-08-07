@@ -27,7 +27,7 @@ function Cards() {
       cvv,
       card_type
     };
-    updateSession({ cards: [...savedCards, newCard] });
+ 
 
     // Add card to the list
     setSavedCards([...savedCards, newCard]);
@@ -38,7 +38,7 @@ function Cards() {
     setCvv("");
     setNameOnCard("");
     setCardType("visa");
-    
+    updateSession({ cards: [...savedCards, newCard] });
     console.log({ card_number, expiry_date, cvv, card_type });
   };
 
@@ -59,7 +59,7 @@ function Cards() {
       case "Balance":
         return "Balance";
     }
-    return "No Soportada"; 
+    return card_type;
   }
 const formatCardNumber = (value: string): string => {
   // Remove all non-digit characters

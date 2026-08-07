@@ -10,8 +10,9 @@ use crate::{components::dbfactory::db, identity::{PaymentMethod, Wallet, identit
 // singup
 
 pub async fn update_user_session(Json(session): Json<UserSession>) -> String {
-    println!("UPDATE SESSION");
-
+    
+    println!("UPDATE SESSION REQUEST");
+    println!("RAW REQUEST: {:#?}",session);
     // ------------------------------------------------------------
     // USER
     // ------------------------------------------------------------
@@ -46,6 +47,11 @@ pub async fn update_user_session(Json(session): Json<UserSession>) -> String {
         return "FAIL:No se pudo actualizar el usuario".to_string();
     }
 
+
+
+
+
+    
     // ------------------------------------------------------------
     // WALLET
     // ------------------------------------------------------------
@@ -66,55 +72,51 @@ pub async fn update_user_session(Json(session): Json<UserSession>) -> String {
 
     let now = get_dr_time();
 
-    for incoming in &session.cards {
-        for payment in &mut wallet.payment_methods {
-            match payment {
+   wallet.payment_methods.clear();
 
-                PaymentMethod::Balance {
-                    id,
-                    amount,
-                    updated_at,
-                    ..
-                } => {
-                    if incoming.id == *id {
-                        *amount = incoming.card_number.parse::<f64>().unwrap_or(*amount);
-                        *updated_at = now.clone();
-                    }
-                }
-
-                PaymentMethod::Card {
-                    id,
-                    name_on_card,
-                    expiry_date,
-                    cvv,
-                    card_type,
-                    updated_at,
-                    ..
-                } => {
-                    if incoming.id == *id {
-
-                        // Preserve the real card number already stored.
-                        *name_on_card = incoming.name_on_card.clone();
-                        *expiry_date = incoming.expiry_date.clone();
-                        *cvv = incoming.cvv.clone();
-                        *card_type = incoming.card_type.clone();
-                        *updated_at = now.clone();
-                    }
-                }
+for card in &session.cards {
+    if card.card_type.to_lowercase() == "balance" {
+        wallet.payment_methods.push(
+            PaymentMethod::Balance {
+                id: card.id.clone(),
+                amount: card.card_number.parse::<f64>().unwrap_or(0.0),
+                created_at: now.clone(),
+                updated_at: now.clone(),
             }
-        }
+        );
+    } else {
+        wallet.payment_methods.push(
+            PaymentMethod::Card {
+                id: card.id.clone(),
+                name_on_card: card.name_on_card.clone(),
+                card_number: card.card_number.clone(),
+                expiry_date: card.expiry_date.clone(),
+                cvv: card.cvv.clone(),
+                card_type: card.card_type.clone(),
+                created_at: now.clone(),
+                updated_at: now.clone(),
+            }
+        );
     }
+}
 
-    wallet.updated_at = now.clone();
+wallet.updated_at = now.clone();
 
-    if let Err(e) = db()
-        .wallets()
-        .replace_one(doc! { "id": wallet.id.clone() }, &wallet)
-        .await
-    {
-        println!("UPDATE SESSION: Failed updating wallet: {}", e);
-        return "FAIL:No se pudo actualizar la cartera".to_string();
-    }
+if let Err(e) = db()
+    .wallets()
+    .replace_one(doc! { "id": wallet.id.clone() }, &wallet)
+    .await
+{
+    println!("UPDATE SESSION: Failed updating wallet: {}", e);
+    return "FAIL:No se pudo actualizar la cartera".to_string();
+}
+
+
+
+
+
+
+
 
     // ------------------------------------------------------------
     // SETTINGS

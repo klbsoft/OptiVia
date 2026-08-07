@@ -71,7 +71,7 @@ pub async fn get_user_session(Json(user_info): Json<UserSessionRequest>) -> Stri
 
     }
   
-    let mut trips: Vec<TripHistory> = Vec::new();
+    let mut history: Vec<TripHistory> = Vec::new();
 
     let mut passenger_trips = match db()
         .passenger_trips()
@@ -141,7 +141,7 @@ pub async fn get_user_session(Json(user_info): Json<UserSessionRequest>) -> Stri
                     status: passenger_trip.status,
                 };
 
-                trips.push(trip_history);
+                history.push(trip_history);
             }
 
             Err(e) => {
@@ -171,9 +171,9 @@ pub async fn get_user_session(Json(user_info): Json<UserSessionRequest>) -> Stri
 
     let session  = UserSession{
         user:person,
-        cards,
-        history:trips,
-        settings
+        cards:cards,
+        history:history,
+        settings:settings
     };
     let json = match serde_json::to_string(&session) {
         Ok(json) => json,

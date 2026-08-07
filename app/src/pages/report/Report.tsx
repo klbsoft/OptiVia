@@ -3,6 +3,7 @@ import { commonStyles } from "../../components/theme/default";
 import { useView } from "../../context/ViewContext";
 import Home from "../home/Home";
 import "../../animation.css"
+import { useFooter } from "../../context/FooterContext";
 
 const reportTypes = [
   { value: "fear", label: "Miedo / Inseguridad" },
@@ -27,6 +28,7 @@ const referenceTypes = [
 
 function Report() {
   const { setCurrentView } = useView();
+  const {setEnabled} = useFooter(); 
   const [reportType, setReportType] = useState("");
   const [showReportTypeDropdown, setShowReportTypeDropdown] = useState(false);
   const [referenceType, setReferenceType] = useState("");
@@ -36,6 +38,7 @@ function Report() {
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [sent, setSent] = useState(false);
+
 
   const handleSend = () => {
     if (!reportType) return;
@@ -62,6 +65,7 @@ function Report() {
     
     setSent(true);
     console.log("Report submitted:", newReport);
+    
     // API call here later
   };
 
@@ -70,6 +74,8 @@ function Report() {
     if (sent) {
       const timer = setTimeout(() => {
         setCurrentView(<Home />);
+        setEnabled(true); 
+        
       }, 1500);
       return () => clearTimeout(timer);
     }

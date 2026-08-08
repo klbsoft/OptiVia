@@ -16,9 +16,12 @@ const labelStyle: React.CSSProperties = {
 };
 
 function UserTypeSection({ formData, setFormData }: UserTypeSectionProps) {
-  const updateField = (field: keyof SignUpFormData, value: any) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+
+
+const updateField = (field: keyof SignUpFormData, value: any) => {
+  setFormData({ ...formData, [field]: value });
+};
+
 
   return (
     <div

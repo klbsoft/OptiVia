@@ -1,0 +1,172 @@
+Introduccion:
+
+> Propuesta + Aplicacion Mobil + Digitalizacion + Informacion + Transporte Publico + OMZA  + Juan Bosh + Tecnologia
+
+
+Naturaleza: 
+
+>Debido a que es un Demo de una Aplicacion Web es de tipo:  Tecnologica , Aplicada ,Social
+
+Tecnologica = APP
+
+Aplicada = Creacion de Demo 
+
+Social = Mejora de El Transporte Publico
+
+
+Beneficiarios: 
+
+> Usuarios de Tranporte en Santo Domingo Este + Ciudad Juan Bosh + Necesitan Informacion Sobre su Ruta. 
+
+ 
+Utilidades: 
+
+> Contribuye de Manera Social a los Usuario de OMZA en Santo Domingo Este + En El Accesso de Informacion a su ruta. 
+
+
+Tamaño: 
+
+> Local Santo Domingo Este , Corredor Juan Bush. 
+
+Diseño de Una Propuesta de Una App Por medio de Un Demo. 
+
+Y Todo esto Inidica que este Proyecto es de Tamaño moderado. 
+
+
+Delimitacion: 
+
+> Santo Domingo Este + Corredor Juan Bosh
+
+La investigación se centrará en:
+•Identificar las principales rutas de transporte público OMSA del municipio.
+
+•Analizar las necesidades informativas de los usuarios.
+
+•Proponer funcionalidades básicas de la aplicación (mapa, geolocalización,
+rutas, tarifas aproximadas y puntos de referencia).
+
+•Diseñar el modelo conceptual y comunicacional de la app.
+
+No se incluirá:
+
+•El desarrollo técnico completo del software.
+
+•La implementación oficial en plataformas digitales.
+
+•La expansión a otros municipios.
+
+
+
+Justifiacion: 
+
+Dificultad de Accesso a la Informacion Actualizada Actualizada y En Tiempo Real. 
+
+•Qué ruta tomar.
+•Dónde pasa el transporte público OMSA.
+•Cuál es el recorrido específico.
+•El costo actualizado del pasaje
+
+Se enfoca en dar Informacion Clara y Precisa. 
+
+
+
+Importancia: 
+
+Uno de los Retos de una Sociedad En Desarollo + Mobilidad. 
+
+Y la modernsisacion de el acceso a la informacon podria estar abriendo puertas para optimizar dicho transporte. 
+
+ 
+
+Objetivo General: 
+
+El desarollo de una app Demo , la cual pueda proveer informacion en tiempo real  sobre el Transporte en la ruta de la OMZA. 	
+
+
+Objetivo Espesifico: 
+
+> Identificacion de Problema
+> Prototipo 
+> Viabilidad Tecnica...
+
+
+
+Antecedentes: 
+
+> de 10,771,504 somos 1,029,117  
+9.55%
+
+Censo Nacional de Población y Vivienda 2022 de la Oficina
+Nacional de Estadística (ONE), el Distrito Nacional concentra
+
+y aun continuamos en crecimiento. 
+
+
+
+Formulaciond de la Hipotesis: 
+
+> La Falta de Informacion Genera Desorden y Elimina la Posibilidad de Optimizacion. 
+
+
+Variable dependiente: 
+
+> Mejora de Servicios. 
+
+
+Variable Independiente: 
+
+> Desarollo de la App. 
+
+
+Metodo de Investigacion:
+
+> Mixto
+
+
+Tipo de Estudio: 
+
+> Investigacion de Campo
+> Investigacion Tecnologica 
+
+
+Tecnicas: 
+
+> Encuestaas a Usuarios 
+> Objesrvacion directa 
+
+
+Fuentes y Tipos de Datos: 
+
+> Usuarios 
+> Documentos Estadisticos(ONE,Google Trend) 
+
+
+Tamaño de la Poblacion: 
+Calculo de la Muestra: 
+Resultados del Cuestionario: 
+
+> La entrevista evicdencio la necesidad de una herramienta digital. 
+
+
+
+Presupuesto General del Proyecto:100,000
+Gastos de Instalacion: 85,000
+Gastos Operacionales: 50,000
+
+Arquitectura del Sistema:
+Frontend:
+Backend:
+
+
+Conclusion: 
+
+OptiVia es una aplicacion web la cual basada en esta investigacion pudo estar mostrando la oportunidades que existen no solo para mejorar el acceso a la informacion pero tambien con la posibilidad de optimizar los servicios de transporte publicos. 
+
+
+
+
+
+
+
+
+
